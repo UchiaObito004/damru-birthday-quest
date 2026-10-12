@@ -1,175 +1,19 @@
-// --- NETFLIX AUDIO ENGINE (Web Audio API with Signature "TA-DUM") ---
+// --- SILENT SOUND ENGINE (Sound Disabled - Ready for Custom Music Later) ---
 class SoundEngine {
   constructor() {
-    this.ctx = null;
-    this.muted = false;
-    this.bgInterval = null;
+    this.muted = true;
   }
-
-  init() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      this.ctx = new AudioCtx();
-    }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-  }
-
-  toggleMute() {
-    this.muted = !this.muted;
-    return this.muted;
-  }
-
-  playTone(freq, type = 'sine', duration = 0.2, gainVal = 0.15) {
-    if (this.muted) return;
-    this.init();
-    try {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-      gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + duration);
-    } catch (e) {
-      console.warn(e);
-    }
-  }
-
-  // Signature Netflix "TA-DUM" Synthesizer
-  playTaDum() {
-    if (this.muted) return;
-    this.init();
-    try {
-      const now = this.ctx.currentTime;
-
-      // 1. Heavy cinematic sub-bass rumble (First hit "TA")
-      const subOsc = this.ctx.createOscillator();
-      const subGain = this.ctx.createGain();
-      subOsc.type = 'sine';
-      subOsc.frequency.setValueAtTime(80, now);
-      subOsc.frequency.exponentialRampToValueAtTime(45, now + 0.8);
-      subGain.gain.setValueAtTime(0.5, now);
-      subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-      subOsc.connect(subGain);
-      subGain.connect(this.ctx.destination);
-      subOsc.start(now);
-      subOsc.stop(now + 0.8);
-
-      // 2. Anvil / Metallic strike chord (Second hit "DUMMM")
-      const chordNotes = [146.83, 220.00, 293.66, 369.99, 1174.66]; // D3, A3, D4, F#4, D6
-      chordNotes.forEach((freq, idx) => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = idx === 0 ? 'sawtooth' : 'triangle';
-        osc.frequency.setValueAtTime(freq, now + 0.18);
-        gain.gain.setValueAtTime(0.28, now + 0.18);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.4);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now + 0.18);
-        osc.stop(now + 2.4);
-      });
-
-      this.vibrate([70, 40, 140]);
-    } catch (e) {
-      console.warn('TaDum error:', e);
-    }
-  }
-
-  playPop() {
-    this.playTone(587.33, 'triangle', 0.12, 0.22);
-    this.vibrate(30);
-  }
-
-  playCatch(combo = 1) {
-    if (this.muted) return;
-    this.init();
-    const baseFreq = 440 + combo * 80;
-    this.playTone(baseFreq, 'sine', 0.15, 0.2);
-    setTimeout(() => this.playTone(baseFreq * 1.25, 'triangle', 0.18, 0.2), 60);
-    this.vibrate(40);
-  }
-
-  playRoast() {
-    this.playTone(160, 'sawtooth', 0.35, 0.25);
-    this.vibrate([80, 50, 80]);
-  }
-
-  playFanfare() {
-    if (this.muted) return;
-    this.init();
-    const melody = [523.25, 659.25, 783.99, 1046.50];
-    melody.forEach((freq, i) => {
-      setTimeout(() => this.playTone(freq, 'triangle', 0.3, 0.22), i * 110);
-    });
-    this.vibrate([60, 40, 100]);
-  }
-
-  playHappyBirthdayChime() {
-    if (this.muted) return;
-    this.init();
-    const notes = [
-      { f: 392, d: 250 }, { f: 392, d: 250 }, { f: 440, d: 400 },
-      { f: 392, d: 400 }, { f: 523, d: 400 }, { f: 493.88, d: 700 }
-    ];
-    let offset = 0;
-    notes.forEach(n => {
-      setTimeout(() => this.playTone(n.f, 'triangle', n.d / 1000, 0.25), offset);
-      offset += n.d + 50;
-    });
-  }
-
-  playBlowWind() {
-    if (this.muted) return;
-    this.init();
-    try {
-      const bufferSize = this.ctx.sampleRate * 1.6;
-      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-      const noise = this.ctx.createBufferSource();
-      noise.buffer = buffer;
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(450, this.ctx.currentTime);
-      filter.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 1.4);
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.4);
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.ctx.destination);
-      noise.start();
-    } catch (e) {
-      console.warn(e);
-    }
-  }
-
-  startAmbientChimes() {
-    if (this.bgInterval) return;
-    const chords = [
-      [329.63, 440, 554.37],
-      [293.66, 369.99, 440],
-      [392.00, 493.88, 587.33],
-      [440.00, 554.37, 659.25]
-    ];
-    let chordIdx = 0;
-    this.bgInterval = setInterval(() => {
-      if (!this.muted && this.ctx) {
-        const chord = chords[chordIdx % chords.length];
-        chord.forEach((freq, i) => {
-          setTimeout(() => this.playTone(freq, 'sine', 2.0, 0.02), i * 160);
-        });
-        chordIdx++;
-      }
-    }, 3600);
-  }
-
+  init() {}
+  toggleMute() { return true; }
+  playTone() {}
+  playTaDum() {}
+  playPop() {}
+  playCatch() {}
+  playRoast() {}
+  playFanfare() {}
+  playHappyBirthdayChime() {}
+  playBlowWind() {}
+  startAmbientChimes() {}
   vibrate(pattern) {
     if (navigator.vibrate) {
       try { navigator.vibrate(pattern); } catch (e) {}
@@ -332,13 +176,6 @@ function showScreen(screenId, epLabel = 'S1: EP 0') {
   }
 }
 
-// Sound Button Toggle
-const soundBtn = document.getElementById('sound-toggle');
-const soundIcon = document.getElementById('sound-icon');
-soundBtn.addEventListener('click', () => {
-  const isMuted = sound.toggleMute();
-  soundIcon.textContent = isMuted ? '🔇' : '🔊';
-});
 
 // Logo Home navigation
 document.getElementById('nav-logo').addEventListener('click', () => {
