@@ -356,7 +356,7 @@ document.getElementById('btn-start').addEventListener('click', () => {
 // ==========================================
 let gameScore = 0;
 let comboMultiplier = 1;
-let gameTimeLeft = 15;
+let gameTimeLeft = 20;
 let gameInterval = null;
 let spawnInterval = null;
 const gameBoard = document.getElementById('game-board');
@@ -373,10 +373,10 @@ function startGame() {
   sound.init();
   gameScore = 0;
   comboMultiplier = 1;
-  gameTimeLeft = 15;
+  gameTimeLeft = 20;
   scoreEl.textContent = '0';
   comboEl.textContent = 'x1';
-  timerEl.textContent = '15';
+  timerEl.textContent = '20';
   overlayEl.classList.add('hidden');
   reward1El.classList.add('hidden');
 
@@ -388,11 +388,11 @@ function startGame() {
     if (gameTimeLeft <= 0) endGame(false);
   }, 1000);
 
-  spawnInterval = setInterval(spawnTreat, 500);
+  spawnInterval = setInterval(spawnTreat, 480);
 }
 
 function spawnTreat() {
-  if (gameScore >= 10) return;
+  if (gameScore >= 8) return;
   const treats = ['🎂', '🧁', '🍦', '🍫', '🎁', '🍓', '🩴', '📚'];
   const itemChar = treats[Math.floor(Math.random() * treats.length)];
   const isRoast = itemChar === '🩴' || itemChar === '📚';
@@ -401,7 +401,7 @@ function spawnTreat() {
   item.className = 'falling-item';
   item.textContent = itemChar;
   item.style.left = `${Math.random() * 80 + 5}%`;
-  item.style.animationDuration = `${Math.random() * 1.1 + 1.6}s`;
+  item.style.animationDuration = `${Math.random() * 1.1 + 1.8}s`;
 
   item.addEventListener('pointerdown', (e) => {
     e.stopPropagation();
@@ -429,11 +429,11 @@ function spawnTreat() {
     scoreEl.textContent = gameScore;
     setTimeout(() => item.remove(), 100);
 
-    if (gameScore >= 10) endGame(true);
+    if (gameScore >= 8) endGame(true);
   });
 
   gameBoard.appendChild(item);
-  setTimeout(() => { if (item.parentNode) item.remove(); }, 2800);
+  setTimeout(() => { if (item.parentNode) item.remove(); }, 3000);
 }
 
 function endGame(won) {
