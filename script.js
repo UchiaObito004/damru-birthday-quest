@@ -1,27 +1,4 @@
-// --- SILENT SOUND ENGINE (Sound Disabled - Ready for Custom Music Later) ---
-class SoundEngine {
-  constructor() {
-    this.muted = true;
-  }
-  init() {}
-  toggleMute() { return true; }
-  playTone() {}
-  playTaDum() {}
-  playPop() {}
-  playCatch() {}
-  playRoast() {}
-  playFanfare() {}
-  playHappyBirthdayChime() {}
-  playBlowWind() {}
-  startAmbientChimes() {}
-  vibrate(pattern) {
-    if (navigator.vibrate) {
-      try { navigator.vibrate(pattern); } catch (e) {}
-    }
-  }
-}
-
-const sound = new SoundEngine();
+// --- SILENT MODE (Zero audio/sound. Ready for custom background music later) ---
 
 // --- BACKGROUND CANVAS (Stars & Sky Lanterns) ---
 const bgCanvas = document.getElementById('bg-canvas');
@@ -101,81 +78,79 @@ function resizeFwCanvas() {
 window.addEventListener('resize', resizeFwCanvas);
 resizeFwCanvas();
 
-function triggerExplosion(x, y, count = 45) {
-  const colors = ['#e50914', '#ffbe3b', '#00f2fe', '#ffffff', '#ffd700'];
+function triggerExplosion(x, y, count = 40) {
+  const colors = ['#e50914', '#ffd700', '#ff2e93', '#00f2fe', '#ffffff', '#b81d24'];
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = Math.random() * 7 + 2;
+    const speed = Math.random() * 6 + 2;
     particles.push({
       x: x,
       y: y,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
-      color: colors[Math.floor(Math.random() * colors.length)],
       alpha: 1,
-      decay: Math.random() * 0.02 + 0.015,
-      size: Math.random() * 3.2 + 2
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 3.5 + 2
     });
   }
 }
 
-function animateFireworks() {
+function animateFw() {
   fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
     p.x += p.vx;
     p.y += p.vy;
-    p.vy += 0.09;
-    p.alpha -= p.decay;
+    p.vy += 0.08;
+    p.alpha -= 0.02;
+
+    if (p.alpha <= 0) {
+      particles.splice(i, 1);
+      continue;
+    }
 
     fwCtx.beginPath();
     fwCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
     fwCtx.fillStyle = p.color;
-    fwCtx.globalAlpha = Math.max(0, p.alpha);
-    fwCtx.shadowBlur = 10;
-    fwCtx.shadowColor = p.color;
+    fwCtx.globalAlpha = p.alpha;
     fwCtx.fill();
-    fwCtx.globalAlpha = 1;
-
-    if (p.alpha <= 0) particles.splice(i, 1);
+    fwCtx.globalAlpha = 1.0;
   }
-  requestAnimationFrame(animateFireworks);
+  requestAnimationFrame(animateFw);
 }
-animateFireworks();
+animateFw();
 
 function blastConfetti() {
-  sound.playFanfare();
-  flashScreen();
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 5; i++) {
     setTimeout(() => {
       triggerExplosion(
-        Math.random() * (window.innerWidth * 0.8) + window.innerWidth * 0.1,
-        Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.1,
-        50
+        Math.random() * window.innerWidth,
+        Math.random() * (window.innerHeight * 0.6) + 50,
+        35
       );
-    }, i * 220);
+    }, i * 160);
   }
 }
 
+// Flash Transition
 function flashScreen() {
   const flash = document.getElementById('flash-overlay');
-  flash.style.opacity = '0.35';
-  setTimeout(() => { flash.style.opacity = '0'; }, 150);
+  flash.classList.add('flash');
+  setTimeout(() => flash.classList.remove('flash'), 500);
 }
 
-// --- SCREEN NAVIGATION CONTROLLER ---
-const episodePill = document.getElementById('episode-pill');
-
-function showScreen(screenId, epLabel = 'S1: EP 0') {
-  document.querySelectorAll('.level-screen').forEach(el => el.classList.remove('active'));
+// Navigation & Pill
+function showScreen(screenId, pillText) {
+  document.querySelectorAll('.level-screen').forEach(s => s.classList.remove('active'));
   const target = document.getElementById(screenId);
   if (target) {
     target.classList.add('active');
-    episodePill.textContent = epLabel;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  if (pillText) {
+    document.getElementById('episode-pill').textContent = pillText;
+  }
 }
-
 
 // Logo Home navigation
 document.getElementById('nav-logo').addEventListener('click', () => {
@@ -186,28 +161,21 @@ document.getElementById('nav-logo').addEventListener('click', () => {
 // SCREEN 0: "WHO'S WATCHING?" INTERACTIONS
 // ==========================================
 document.getElementById('profile-damru').addEventListener('click', () => {
-  sound.init();
-  sound.playPop();
   flashScreen();
   setTimeout(() => {
     showScreen('screen-billboard', 'S1: PREVIEW');
-    sound.startAmbientChimes();
   }, 300);
 });
 
 document.getElementById('profile-bhai').addEventListener('click', () => {
-  sound.init();
-  sound.playRoast();
   alert("🛑 ACCESS RESTRICTED: Tonight is 100% Damru's Show! Please select Damru's profile! 👸🍿");
 });
 
 document.getElementById('btn-play-ep1').addEventListener('click', () => {
-  sound.playPop();
   showScreen('screen-level-1', 'S1: EP 1');
 });
 
 document.getElementById('btn-episodes-list').addEventListener('click', () => {
-  sound.playPop();
   alert("🍿 Damflix Season 1 Episodes:\n\n• Episode 1: The Sugar Rush Reflex\n• Episode 2: Quantum Aura Scanner\n• Episode 3: Sibling Lie Detector\n• Episode 4: The Wishing Sanctuary\n• Episode 5: Season Finale & Hinglish Shayari 👑");
 });
 
@@ -230,7 +198,6 @@ const reward1El = document.getElementById('reward-1');
 document.getElementById('btn-start-game').addEventListener('click', startGame);
 
 function startGame() {
-  sound.init();
   gameScore = 0;
   comboMultiplier = 1;
   gameTimeLeft = 20;
@@ -266,13 +233,11 @@ function spawnTreat() {
   item.addEventListener('pointerdown', (e) => {
     e.stopPropagation();
     if (isRoast) {
-      sound.playRoast();
       comboMultiplier = 1;
       comboEl.textContent = 'x1';
       gameScore = Math.max(0, gameScore - 1);
       item.textContent = '💥';
     } else {
-      sound.playCatch(comboMultiplier);
       gameScore++;
       comboMultiplier = Math.min(5, comboMultiplier + 1);
       comboEl.textContent = `x${comboMultiplier}`;
@@ -305,14 +270,12 @@ function endGame(won) {
     blastConfetti();
     reward1El.classList.remove('hidden');
   } else {
-    sound.playRoast();
     overlayEl.classList.remove('hidden');
     overlayEl.querySelector('button').textContent = 'SO CLOSE! TAP TO RETRY 🔄';
   }
 }
 
 document.getElementById('btn-next-2').addEventListener('click', () => {
-  sound.playPop();
   showScreen('screen-level-2', 'S1: EP 2');
 });
 
@@ -329,7 +292,6 @@ let scanPercent = 0;
 
 function startScanning(e) {
   e.preventDefault();
-  sound.init();
   scanContainer.classList.add('scanning');
   scanBtn.classList.add('active');
   scanPrompt.textContent = 'DAMFLIX AI: SCANNING FREQUENCIES... 📡';
@@ -337,8 +299,10 @@ function startScanning(e) {
   scanTimer = setInterval(() => {
     scanPercent += 3.5;
     scanProgress.style.width = `${scanPercent}%`;
-    sound.playTone(320 + scanPercent * 8, 'sine', 0.08, 0.06);
-    sound.vibrate(20);
+
+    if (navigator.vibrate) {
+      try { navigator.vibrate(20); } catch (err) {}
+    }
 
     if (scanPercent >= 100) {
       clearInterval(scanTimer);
@@ -371,7 +335,6 @@ window.addEventListener('pointerup', stopScanning);
 window.addEventListener('pointercancel', stopScanning);
 
 document.getElementById('btn-next-3').addEventListener('click', () => {
-  sound.playPop();
   showScreen('screen-level-3', 'S1: EP 3');
 });
 
@@ -379,11 +342,9 @@ document.getElementById('btn-next-3').addEventListener('click', () => {
 // EPISODE 3: SIBLING LIE DETECTOR (5 QUESTIONS)
 // ==========================================
 window.handleQuizAnswer = function(questionNum, answer) {
-  sound.init();
   const feedbackEl = document.getElementById(`quiz-feedback-${questionNum}`);
   
   if (questionNum === 1) {
-    sound.playCatch(2);
     feedbackEl.textContent = "TRUTH: 10% miss karna, 90% drama aur urgent gossip! 😂";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
@@ -391,7 +352,6 @@ window.handleQuizAnswer = function(questionNum, answer) {
       document.getElementById('quiz-step-2').classList.remove('hidden');
     }, 1200);
   } else if (questionNum === 2) {
-    sound.playCatch(3);
     feedbackEl.textContent = "100% FACT: 99% time call me sirf apni hi screen dekhti hai! 🤳😂";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
@@ -399,7 +359,6 @@ window.handleQuizAnswer = function(questionNum, answer) {
       document.getElementById('quiz-step-3').classList.remove('hidden');
     }, 1200);
   } else if (questionNum === 3) {
-    sound.playCatch(4);
     feedbackEl.textContent = "FACT: Gossip sunne me speed light se bhi tez hai! ⚡🍿";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
@@ -407,7 +366,6 @@ window.handleQuizAnswer = function(questionNum, answer) {
       document.getElementById('quiz-step-4').classList.remove('hidden');
     }, 1200);
   } else if (questionNum === 4) {
-    sound.playCatch(5);
     feedbackEl.textContent = "SCIENTIFIC FACT: Bhai's money = Damru's emergency pocket money! 💸";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
@@ -426,7 +384,6 @@ window.handleQuizAnswer = function(questionNum, answer) {
 };
 
 document.getElementById('btn-next-4').addEventListener('click', () => {
-  sound.playPop();
   showScreen('screen-level-4', 'S1: EP 4');
 });
 
@@ -438,49 +395,14 @@ const blowBtn = document.getElementById('btn-blow-candle');
 const blowBtnText = document.getElementById('blow-btn-text');
 const wishSuccess = document.getElementById('wish-success');
 let wishMade = false;
-let micStream = null;
-
-async function setupMicDetection() {
-  try {
-    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaStreamSource(micStream);
-    source.connect(analyser);
-    analyser.fftSize = 256;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    function checkBlow() {
-      if (wishMade) return;
-      analyser.getByteFrequencyData(dataArray);
-      let sum = 0;
-      for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
-      let avg = sum / bufferLength;
-
-      if (avg > 65) {
-        blowOutCandle();
-        if (micStream) micStream.getTracks().forEach(t => t.stop());
-      } else {
-        requestAnimationFrame(checkBlow);
-      }
-    }
-    checkBlow();
-  } catch (err) {
-    console.log('Mic fallback active');
-  }
-}
 
 function blowOutCandle() {
   if (wishMade) return;
   wishMade = true;
 
-  sound.playBlowWind();
   candle.classList.add('blown');
   blowBtn.disabled = true;
   blowBtnText.textContent = '✨ WISH RECORDED & SEALED! ✨';
-
-  setTimeout(() => { sound.playHappyBirthdayChime(); }, 400);
 
   for (let i = 0; i < 25; i++) {
     setTimeout(() => spawnLantern('🏮'), i * 120);
@@ -492,15 +414,10 @@ function blowOutCandle() {
   }, 1200);
 }
 
-blowBtn.addEventListener('click', () => { sound.init(); blowOutCandle(); });
-candle.addEventListener('click', () => { sound.init(); blowOutCandle(); });
-
-document.getElementById('btn-next-4').addEventListener('click', () => {
-  setTimeout(setupMicDetection, 1000);
-});
+blowBtn.addEventListener('click', blowOutCandle);
+candle.addEventListener('click', blowOutCandle);
 
 document.getElementById('btn-next-5').addEventListener('click', () => {
-  sound.playPop();
   showScreen('screen-level-5', 'S1: FINALE');
   startGrandFinale();
 });
@@ -565,7 +482,6 @@ const envelopeContent = document.getElementById('envelope-content');
 const envelopeArrow = document.getElementById('envelope-arrow');
 
 envelopeToggle.addEventListener('click', () => {
-  sound.playPop();
   envelopeContent.classList.toggle('hidden');
   envelopeArrow.textContent = envelopeContent.classList.contains('hidden') ? '▼' : '▲';
 });
@@ -577,6 +493,5 @@ document.getElementById('btn-screenshot-hint').addEventListener('click', () => {
 
 // Restart Show
 document.getElementById('btn-restart').addEventListener('click', () => {
-  sound.playPop();
   showScreen('screen-profiles', 'S1: EP 0');
 });
