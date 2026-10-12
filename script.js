@@ -1,4 +1,4 @@
-// --- ADVANCED AUDIO ENGINE (Web Audio API + Melody Synthesizer) ---
+// --- NETFLIX AUDIO ENGINE (Web Audio API with Signature "TA-DUM") ---
 class SoundEngine {
   constructor() {
     this.ctx = null;
@@ -40,8 +40,49 @@ class SoundEngine {
     }
   }
 
+  // Signature Netflix "TA-DUM" Synthesizer
+  playTaDum() {
+    if (this.muted) return;
+    this.init();
+    try {
+      const now = this.ctx.currentTime;
+
+      // 1. Heavy cinematic sub-bass rumble (First hit "TA")
+      const subOsc = this.ctx.createOscillator();
+      const subGain = this.ctx.createGain();
+      subOsc.type = 'sine';
+      subOsc.frequency.setValueAtTime(80, now);
+      subOsc.frequency.exponentialRampToValueAtTime(45, now + 0.8);
+      subGain.gain.setValueAtTime(0.5, now);
+      subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+      subOsc.connect(subGain);
+      subGain.connect(this.ctx.destination);
+      subOsc.start(now);
+      subOsc.stop(now + 0.8);
+
+      // 2. Anvil / Metallic strike chord (Second hit "DUMMM")
+      const chordNotes = [146.83, 220.00, 293.66, 369.99, 1174.66]; // D3, A3, D4, F#4, D6
+      chordNotes.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = idx === 0 ? 'sawtooth' : 'triangle';
+        osc.frequency.setValueAtTime(freq, now + 0.18);
+        gain.gain.setValueAtTime(0.28, now + 0.18);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.4);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + 0.18);
+        osc.stop(now + 2.4);
+      });
+
+      this.vibrate([70, 40, 140]);
+    } catch (e) {
+      console.warn('TaDum error:', e);
+    }
+  }
+
   playPop() {
-    this.playTone(587.33, 'triangle', 0.12, 0.25);
+    this.playTone(587.33, 'triangle', 0.12, 0.22);
     this.vibrate(30);
   }
 
@@ -72,7 +113,6 @@ class SoundEngine {
   playHappyBirthdayChime() {
     if (this.muted) return;
     this.init();
-    // G4 G4 A4 G4 C5 B4
     const notes = [
       { f: 392, d: 250 }, { f: 392, d: 250 }, { f: 440, d: 400 },
       { f: 392, d: 400 }, { f: 523, d: 400 }, { f: 493.88, d: 700 }
@@ -91,9 +131,7 @@ class SoundEngine {
       const bufferSize = this.ctx.sampleRate * 1.6;
       const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
       const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
+      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
       const noise = this.ctx.createBufferSource();
       noise.buffer = buffer;
       const filter = this.ctx.createBiquadFilter();
@@ -125,11 +163,11 @@ class SoundEngine {
       if (!this.muted && this.ctx) {
         const chord = chords[chordIdx % chords.length];
         chord.forEach((freq, i) => {
-          setTimeout(() => this.playTone(freq, 'sine', 2.0, 0.025), i * 160);
+          setTimeout(() => this.playTone(freq, 'sine', 2.0, 0.02), i * 160);
         });
         chordIdx++;
       }
-    }, 3400);
+    }, 3600);
   }
 
   vibrate(pattern) {
@@ -141,12 +179,11 @@ class SoundEngine {
 
 const sound = new SoundEngine();
 
-// --- BACKGROUND COSMIC CANVAS (Stars & Glowing Floating Sky Lanterns) ---
+// --- BACKGROUND CANVAS (Stars & Sky Lanterns) ---
 const bgCanvas = document.getElementById('bg-canvas');
 const bgCtx = bgCanvas.getContext('2d');
 let stars = [];
 let lanterns = [];
-let shootingStars = [];
 
 function resizeBgCanvas() {
   bgCanvas.width = window.innerWidth;
@@ -155,27 +192,15 @@ function resizeBgCanvas() {
 window.addEventListener('resize', resizeBgCanvas);
 resizeBgCanvas();
 
-for (let i = 0; i < 80; i++) {
+for (let i = 0; i < 70; i++) {
   stars.push({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    size: Math.random() * 2.2 + 0.6,
+    size: Math.random() * 2 + 0.6,
     alpha: Math.random(),
     speed: Math.random() * 0.02 + 0.005
   });
 }
-
-function spawnShootingStar() {
-  shootingStars.push({
-    x: Math.random() * window.innerWidth * 0.8,
-    y: Math.random() * window.innerHeight * 0.3,
-    length: Math.random() * 80 + 50,
-    speed: Math.random() * 10 + 12,
-    angle: Math.PI / 4,
-    alpha: 1
-  });
-}
-setInterval(spawnShootingStar, 4000);
 
 function spawnLantern(label = '✨') {
   lanterns.push({
@@ -190,8 +215,6 @@ function spawnLantern(label = '✨') {
 
 function animateBg() {
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-
-  // Stars
   stars.forEach(s => {
     s.alpha += s.speed;
     if (s.alpha > 1 || s.alpha < 0.2) s.speed = -s.speed;
@@ -201,43 +224,17 @@ function animateBg() {
     bgCtx.fill();
   });
 
-  // Shooting Stars
-  for (let i = shootingStars.length - 1; i >= 0; i--) {
-    const ss = shootingStars[i];
-    ss.x += Math.cos(ss.angle) * ss.speed;
-    ss.y += Math.sin(ss.angle) * ss.speed;
-    ss.alpha -= 0.025;
-
-    bgCtx.save();
-    bgCtx.strokeStyle = `rgba(255, 230, 150, ${ss.alpha})`;
-    bgCtx.lineWidth = 2;
-    bgCtx.beginPath();
-    bgCtx.moveTo(ss.x, ss.y);
-    bgCtx.lineTo(ss.x - Math.cos(ss.angle) * ss.length, ss.y - Math.sin(ss.angle) * ss.length);
-    bgCtx.stroke();
-    bgCtx.restore();
-
-    if (ss.alpha <= 0) shootingStars.splice(i, 1);
-  }
-
-  // Floating Lanterns
   for (let i = lanterns.length - 1; i >= 0; i--) {
     const l = lanterns[i];
     l.y -= l.speedY;
     l.x += Math.sin(l.y * 0.02) * 0.7;
 
     bgCtx.save();
-    bgCtx.shadowBlur = 22;
-    bgCtx.shadowColor = '#ffbe3b';
-    bgCtx.fillStyle = `rgba(255, 175, 45, ${l.alpha})`;
+    bgCtx.shadowBlur = 20;
+    bgCtx.shadowColor = '#e50914';
+    bgCtx.fillStyle = `rgba(229, 9, 20, ${l.alpha})`;
     bgCtx.beginPath();
     bgCtx.roundRect(l.x, l.y, l.size, l.size * 1.35, [4, 4, 6, 6]);
-    bgCtx.fill();
-
-    // Glow center
-    bgCtx.fillStyle = `rgba(255, 255, 220, ${l.alpha})`;
-    bgCtx.beginPath();
-    bgCtx.arc(l.x + l.size / 2, l.y + l.size * 0.85, l.size * 0.26, 0, Math.PI * 2);
     bgCtx.fill();
     bgCtx.restore();
 
@@ -248,7 +245,7 @@ function animateBg() {
 }
 animateBg();
 
-// --- FIREWORKS CANVAS ENGINE ---
+// --- FIREWORKS CANVAS ---
 const fwCanvas = document.getElementById('fireworks-canvas');
 const fwCtx = fwCanvas.getContext('2d');
 let particles = [];
@@ -261,7 +258,7 @@ window.addEventListener('resize', resizeFwCanvas);
 resizeFwCanvas();
 
 function triggerExplosion(x, y, count = 45) {
-  const colors = ['#ff2a85', '#ffbe3b', '#00f2fe', '#a855f7', '#ffffff', '#ffd700'];
+  const colors = ['#e50914', '#ffbe3b', '#00f2fe', '#ffffff', '#ffd700'];
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
     const speed = Math.random() * 7 + 2;
@@ -318,19 +315,19 @@ function blastConfetti() {
 
 function flashScreen() {
   const flash = document.getElementById('flash-overlay');
-  flash.style.opacity = '0.4';
+  flash.style.opacity = '0.35';
   setTimeout(() => { flash.style.opacity = '0'; }, 150);
 }
 
 // --- SCREEN NAVIGATION CONTROLLER ---
-const levelIndicator = document.getElementById('level-indicator');
+const episodePill = document.getElementById('episode-pill');
 
-function showScreen(screenId, levelNum = 0) {
+function showScreen(screenId, epLabel = 'S1: EP 0') {
   document.querySelectorAll('.level-screen').forEach(el => el.classList.remove('active'));
   const target = document.getElementById(screenId);
   if (target) {
     target.classList.add('active');
-    levelIndicator.textContent = `LVL ${levelNum}/5`;
+    episodePill.textContent = epLabel;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
@@ -343,16 +340,42 @@ soundBtn.addEventListener('click', () => {
   soundIcon.textContent = isMuted ? '🔇' : '🔊';
 });
 
-// START QUEST BUTTON
-document.getElementById('btn-start').addEventListener('click', () => {
-  sound.init();
-  sound.startAmbientChimes();
-  sound.playPop();
-  showScreen('screen-level-1', 1);
+// Logo Home navigation
+document.getElementById('nav-logo').addEventListener('click', () => {
+  showScreen('screen-billboard', 'S1: HOME');
 });
 
 // ==========================================
-// LEVEL 1: SUGAR RUSH REFLEX ARCADE
+// SCREEN 0: "WHO'S WATCHING?" INTERACTIONS
+// ==========================================
+document.getElementById('profile-damru').addEventListener('click', () => {
+  sound.init();
+  sound.playTaDum();
+  flashScreen();
+  setTimeout(() => {
+    showScreen('screen-billboard', 'S1: PREVIEW');
+    sound.startAmbientChimes();
+  }, 400);
+});
+
+document.getElementById('profile-bhai').addEventListener('click', () => {
+  sound.init();
+  sound.playRoast();
+  alert("🛑 ACCESS RESTRICTED: Tonight is 100% Damru's Show! Please select Damru's profile! 👸🍿");
+});
+
+document.getElementById('btn-play-ep1').addEventListener('click', () => {
+  sound.playPop();
+  showScreen('screen-level-1', 'S1: EP 1');
+});
+
+document.getElementById('btn-episodes-list').addEventListener('click', () => {
+  sound.playPop();
+  alert("🍿 Damflix Season 1 Episodes:\n\n• Episode 1: The Sugar Rush Reflex\n• Episode 2: Quantum Aura Scanner\n• Episode 3: Sibling Lie Detector\n• Episode 4: The Wishing Sanctuary\n• Episode 5: Season Finale & Hinglish Shayari 👑");
+});
+
+// ==========================================
+// EPISODE 1: SUGAR RUSH REFLEX ARCADE
 // ==========================================
 let gameScore = 0;
 let comboMultiplier = 1;
@@ -453,11 +476,11 @@ function endGame(won) {
 
 document.getElementById('btn-next-2').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-level-2', 2);
+  showScreen('screen-level-2', 'S1: EP 2');
 });
 
 // ==========================================
-// LEVEL 2: QUANTUM BIOMETRIC AURA SCANNER
+// EPISODE 2: BIOMETRIC SCANNER
 // ==========================================
 const scanBtn = document.getElementById('scan-touch-btn');
 const scanProgress = document.getElementById('scan-progress');
@@ -472,7 +495,7 @@ function startScanning(e) {
   sound.init();
   scanContainer.classList.add('scanning');
   scanBtn.classList.add('active');
-  scanPrompt.textContent = 'ANALYZING CELESTIAL FREQUENCIES... 📡';
+  scanPrompt.textContent = 'DAMFLIX AI: SCANNING FREQUENCIES... 📡';
 
   scanTimer = setInterval(() => {
     scanPercent += 3.5;
@@ -512,14 +535,12 @@ window.addEventListener('pointercancel', stopScanning);
 
 document.getElementById('btn-next-3').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-level-3', 3);
+  showScreen('screen-level-3', 'S1: EP 3');
 });
 
 // ==========================================
-// LEVEL 3: SIBLING LIE DETECTOR & TRUTH TEST
+// EPISODE 3: SIBLING LIE DETECTOR
 // ==========================================
-let currentQuizStep = 1;
-
 window.handleQuizAnswer = function(questionNum, answer) {
   sound.init();
   const feedbackEl = document.getElementById(`quiz-feedback-${questionNum}`);
@@ -531,7 +552,6 @@ window.handleQuizAnswer = function(questionNum, answer) {
     setTimeout(() => {
       document.getElementById('quiz-step-1').classList.add('hidden');
       document.getElementById('quiz-step-2').classList.remove('hidden');
-      currentQuizStep = 2;
     }, 1200);
   } else if (questionNum === 2) {
     sound.playCatch(3);
@@ -540,7 +560,6 @@ window.handleQuizAnswer = function(questionNum, answer) {
     setTimeout(() => {
       document.getElementById('quiz-step-2').classList.add('hidden');
       document.getElementById('quiz-step-3').classList.remove('hidden');
-      currentQuizStep = 3;
     }, 1200);
   } else if (questionNum === 3) {
     blastConfetti();
@@ -555,28 +574,24 @@ window.handleQuizAnswer = function(questionNum, answer) {
 
 document.getElementById('btn-next-4').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-level-4', 4);
+  showScreen('screen-level-4', 'S1: EP 4');
 });
 
 // ==========================================
-// LEVEL 4: 3D WISH SANCTUARY & CANDLE
+// EPISODE 4: WISHING CAKE & CANDLE
 // ==========================================
 const candle = document.getElementById('interactive-candle');
 const blowBtn = document.getElementById('btn-blow-candle');
 const blowBtnText = document.getElementById('blow-btn-text');
 const wishSuccess = document.getElementById('wish-success');
 let wishMade = false;
-
-// Attempt Microphone Blow Detection
 let micStream = null;
-let audioContext = null;
-let analyser = null;
 
 async function setupMicDetection() {
   try {
     micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioContext.createAnalyser();
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioContext.createAnalyser();
     const source = audioContext.createMediaStreamSource(micStream);
     source.connect(analyser);
     analyser.fftSize = 256;
@@ -590,7 +605,6 @@ async function setupMicDetection() {
       for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
       let avg = sum / bufferLength;
 
-      // Blow sound causes broad high average noise
       if (avg > 65) {
         blowOutCandle();
         if (micStream) micStream.getTracks().forEach(t => t.stop());
@@ -600,7 +614,6 @@ async function setupMicDetection() {
     }
     checkBlow();
   } catch (err) {
-    // Mic permission denied or unsupported - button fallback works seamlessly
     console.log('Mic fallback active');
   }
 }
@@ -614,12 +627,8 @@ function blowOutCandle() {
   blowBtn.disabled = true;
   blowBtnText.textContent = '✨ WISH RECORDED & SEALED! ✨';
 
-  // Play Happy Birthday chime
-  setTimeout(() => {
-    sound.playHappyBirthdayChime();
-  }, 400);
+  setTimeout(() => { sound.playHappyBirthdayChime(); }, 400);
 
-  // Release sky lanterns into night sky
   for (let i = 0; i < 25; i++) {
     setTimeout(() => spawnLantern('🏮'), i * 120);
   }
@@ -630,28 +639,21 @@ function blowOutCandle() {
   }, 1200);
 }
 
-blowBtn.addEventListener('click', () => {
-  sound.init();
-  blowOutCandle();
-});
-candle.addEventListener('click', () => {
-  sound.init();
-  blowOutCandle();
-});
+blowBtn.addEventListener('click', () => { sound.init(); blowOutCandle(); });
+candle.addEventListener('click', () => { sound.init(); blowOutCandle(); });
 
-// Setup mic when reaching Level 4
 document.getElementById('btn-next-4').addEventListener('click', () => {
   setTimeout(setupMicDetection, 1000);
 });
 
 document.getElementById('btn-next-5').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-level-5', 5);
+  showScreen('screen-level-5', 'S1: FINALE');
   startGrandFinale();
 });
 
 // ==========================================
-// LEVEL 5: GRAND FINALE & HINGLISH SHAYARI
+// EPISODE 5: GRAND FINALE & HINGLISH SHAYARI
 // ==========================================
 const shayariLines = [
   "Khushiyon ka har lamha tere daaman mein saj jaaye,",
@@ -666,7 +668,6 @@ const shayariLines = [
 function startGrandFinale() {
   blastConfetti();
   
-  // Continuous celebratory fireworks & lanterns
   setInterval(() => {
     if (document.getElementById('screen-level-5').classList.contains('active')) {
       triggerExplosion(
@@ -678,7 +679,6 @@ function startGrandFinale() {
     }
   }, 1600);
 
-  // Typewriter effect for Shayari
   const container = document.getElementById('shayari-text');
   container.innerHTML = '';
   let lineIdx = 0;
@@ -700,14 +700,13 @@ function startGrandFinale() {
   }
   typeLine();
 
-  // Prefill WhatsApp Share Message
   const shareMsg = encodeURIComponent(
-    "Bhai thank you so much! Ye birthday surprise aur Golden VIP pass bhot zyada mast tha 🥹❤️🥁 Best birthday ever!"
+    "Bhai thank you so much! Ye DAMFLIX birthday surprise aur VIP pass bhot zyada mast tha 🥹❤️🥁 Best birthday ever!"
   );
   document.getElementById('btn-whatsapp-share').href = `https://api.whatsapp.com/send?text=${shareMsg}`;
 }
 
-// Secret Envelope Toggle
+// Secret Note Accordion Toggle
 const envelopeToggle = document.getElementById('envelope-toggle');
 const envelopeContent = document.getElementById('envelope-content');
 const envelopeArrow = document.getElementById('envelope-arrow');
@@ -720,11 +719,11 @@ envelopeToggle.addEventListener('click', () => {
 
 // Screenshot Hint
 document.getElementById('btn-screenshot-hint').addEventListener('click', () => {
-  alert('📸 Tip: Take a screenshot of your screen right now to save your official Golden VIP Pass and show it to Bhai whenever you want to redeem your perks!');
+  alert('📸 Tip: Take a screenshot of this VIP Member Pass right now to save your official DAMFLIX perks!');
 });
 
-// Restart Quest
+// Restart Show
 document.getElementById('btn-restart').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-intro', 0);
+  showScreen('screen-profiles', 'S1: EP 0');
 });

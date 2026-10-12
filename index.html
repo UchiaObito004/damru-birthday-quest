@@ -3,107 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mission: Damru's Birthday Royale 🥁✨</title>
+  <title>DAMFLIX • Damru's Birthday Royale 🍿</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Outfit:wght@300;400;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Ambient Cosmic Canvas & Visual Effects -->
+  <!-- Ambient Cosmic Canvas & Celebratory Fireworks -->
   <canvas id="bg-canvas"></canvas>
   <canvas id="fireworks-canvas"></canvas>
   <div id="flash-overlay"></div>
 
-  <!-- Header -->
-  <header class="top-nav">
-    <div class="mission-tag">
-      <span class="pulse-dot"></span> 
-      <span class="tag-title">PROJECT: DAMRU 🥁</span>
+  <!-- Netflix Style Navbar -->
+  <header class="netflix-nav">
+    <div class="nav-left">
+      <div class="netflix-logo" id="nav-logo">DAMFLIX</div>
+      <div class="nav-links">
+        <span class="active-nav">Home</span>
+        <span>Episodes</span>
+        <span>VIP Perks</span>
+        <span>My List</span>
+      </div>
     </div>
     <div class="nav-right">
-      <span id="level-indicator" class="nav-level-pill">LVL 0/5</span>
+      <div class="episode-pill" id="episode-pill">S1: EP 0</div>
       <button id="sound-toggle" class="sound-btn" aria-label="Toggle Sound">
         <span id="sound-icon">🔊</span>
       </button>
+      <div class="user-avatar-pill" id="nav-profile-pic">
+        <img src="images/damru_1.jpg" alt="Profile">
+      </div>
     </div>
   </header>
 
-  <!-- Main Quest Container -->
-  <main class="quest-container">
+  <!-- Main Container -->
+  <main class="damflix-container">
 
     <!-- ==============================================
-         LEVEL 0: CINEMATIC INTRO SCREEN
+         SCREEN 0: "WHO'S WATCHING?" (NETFLIX INTRO)
          ============================================== -->
-    <section id="screen-intro" class="level-screen active">
-      <div class="glass-card hero-card tilt-card">
-        <div class="confidential-stamp">TOP SECRET DOSSIER</div>
+    <section id="screen-profiles" class="level-screen active">
+      <div class="profile-gate-card">
+        <h1 class="gate-title">Who's Watching?</h1>
         
-        <div class="avatar-badge-wrap">
-          <div class="cosmic-aura"></div>
-          <img src="images/damru_1.jpg" alt="Damru" class="intro-avatar">
-          <div class="crown-badge">👑</div>
-          <div class="sparkle-orbit">✨</div>
+        <div class="profiles-grid">
+          <!-- Profile 1: Damru (Birthday Queen) -->
+          <div class="profile-card" id="profile-damru">
+            <div class="profile-box border-glow">
+              <img src="images/damru_1.jpg" alt="Damru">
+              <div class="profile-crown">👑</div>
+            </div>
+            <span class="profile-name">Damru 🥁</span>
+            <span class="profile-badge">BIRTHDAY QUEEN</span>
+          </div>
+
+          <!-- Profile 2: Bhai -->
+          <div class="profile-card" id="profile-bhai">
+            <div class="profile-box profile-bhai-box">
+              <div class="bhai-avatar-icon">👦🏻</div>
+            </div>
+            <span class="profile-name">Bhai 💼</span>
+            <span class="profile-badge">CHIEF SPONSOR</span>
+          </div>
         </div>
 
-        <div class="title-tag">SPECIAL BIRTHDAY ARCHIVE • HIGH CLEARANCE ONLY</div>
-        <h1 class="glow-title">MISSION:<br><span class="accent-text">DAMRU'S BDAY ROYALE</span> 🥁🤪</h1>
-        
-        <p class="hero-desc">
-          Code Name: <strong>Damru</strong><br>
-          Status: <strong>Chief House Troublemaker & Drama Queen 👸</strong><br>
-          To unlock your birthday perks & secret brother's vault, you must clear <strong>5 Astonishing Levels</strong>!
-        </p>
-
-        <div class="feature-strip">
-          <div class="feature-item"><span>🎮</span> Sugar Rush</div>
-          <div class="feature-item"><span>🔮</span> Aura Scan</div>
-          <div class="feature-item"><span>🕵️‍♀️</span> Truth Test</div>
-          <div class="feature-item"><span>🎂</span> Blow Candle</div>
-          <div class="feature-item"><span>📜</span> Shayari</div>
-        </div>
-
-        <button id="btn-start" class="glow-btn start-pulse">
-          <span class="btn-shine"></span>
-          <span>ENTER THE ROYALE 🚀</span>
-        </button>
+        <p class="profile-hint">Tap <strong>Damru</strong> to trigger the Season Premiere! 🎬</p>
       </div>
     </section>
 
     <!-- ==============================================
-         LEVEL 1: SUGAR RUSH REFLEX ARCADE
+         SCREEN 0.5: THE NETFLIX BILLBOARD SHOWCASE
+         ============================================== -->
+    <section id="screen-billboard" class="level-screen">
+      <div class="billboard-card">
+        <div class="billboard-hero-wrap">
+          <img src="images/damru_1.jpg" alt="Hero Poster" class="billboard-img">
+          <div class="billboard-vignette"></div>
+        </div>
+
+        <div class="billboard-content">
+          <div class="series-badge">
+            <span class="n-red">N</span> SERIES • SEASON 2026 PREMIERE
+          </div>
+          <h1 class="billboard-title">DAMRU: THE ROYALE QUEST 🥁</h1>
+          
+          <div class="meta-row">
+            <span class="meta-match">99% Match</span>
+            <span class="meta-year">2026</span>
+            <span class="meta-rating">VIP 18+</span>
+            <span class="meta-eps">5 Episodes</span>
+            <span class="meta-badge">Ultra HD 4K</span>
+          </div>
+
+          <p class="billboard-desc">
+            Classified as the household's supreme drama queen, <strong>Damru</strong> embarks on an interactive 5-episode journey to conquer sibling reflex trials, decode her celestial aura, and claim lifetime perks guaranteed by Bhai.
+          </p>
+
+          <div class="trending-tag">
+            <span class="top10-badge">TOP 10</span> #1 in Trending Worldwide Today
+          </div>
+
+          <div class="billboard-actions">
+            <button id="btn-play-ep1" class="netflix-play-btn start-pulse">
+              <span>▶</span> Play Episode 1
+            </button>
+            <button id="btn-episodes-list" class="netflix-info-btn">
+              <span>ℹ</span> Episode List
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================
+         EPISODE 1: SUGAR RUSH REFLEX
          ============================================== -->
     <section id="screen-level-1" class="level-screen">
-      <div class="glass-card">
-        <div class="level-header">
-          <span class="level-badge">LEVEL 1 • ARCADE RUSH 🍰</span>
+      <div class="netflix-content-card">
+        <div class="ep-header">
+          <div class="ep-meta">SEASON 1 • EPISODE 1 🍰</div>
           <h2>The Sugar Rush Reflex</h2>
-          <p>Catch <strong>8 Birthday Treats</strong>! Watch out for <em>Mummy's Chappal 🩴</em> & <em>Books 📚</em>!</p>
+          <p>Catch <strong>8 Birthday Treats</strong> in 20 seconds! Beware of <em>Mummy's Chappal 🩴</em> & <em>Books 📚</em>!</p>
         </div>
 
         <div class="game-stats-bar">
-          <div class="stat-pill"><span class="stat-label">CUPCAKES:</span> <span id="game-score" class="stat-val">0</span>/8</div>
+          <div class="stat-pill"><span class="stat-label">TREATS:</span> <span id="game-score" class="stat-val">0</span>/8</div>
           <div class="stat-pill"><span class="stat-label">COMBO:</span> <span id="game-combo" class="stat-val">x1</span> 🔥</div>
           <div class="stat-pill"><span class="stat-label">TIME:</span> <span id="game-timer" class="stat-val">20</span>s</div>
         </div>
 
-        <!-- Interactive Tap Area -->
         <div id="game-board" class="game-arena">
           <div id="combo-toast" class="combo-toast hidden">COMBO x3! 🔥</div>
           <div id="game-start-overlay" class="arena-overlay">
             <div class="arcade-intro">
-              <div class="arcade-icon">🕹️</div>
-              <h3>Ready, Damru?</h3>
+              <div class="arcade-icon">🍿</div>
+              <h3>Ready for Episode 1?</h3>
               <p>Catch cakes 🎂, pastries 🧁 & gifts 🎁</p>
-              <button id="btn-start-game" class="arcade-play-btn">START GAME 🎮</button>
+              <button id="btn-start-game" class="netflix-play-btn">START EPISODE 🎮</button>
             </div>
           </div>
         </div>
 
-        <!-- Level 1 Reward Foil Card -->
+        <!-- Episode 1 Unlocked Voucher -->
         <div id="reward-1" class="perk-voucher hidden">
           <div class="voucher-foil">
-            <div class="voucher-tag">OFFICIAL VOUCHER #001 🎟️</div>
+            <div class="voucher-tag">DAMFLIX PERK #001 🎟️</div>
             <h3>VIP FOODIE IMMUNITY PASS</h3>
             <p class="voucher-desc">
               Brother pays for your next Swiggy/Zomato craving or Cafe dinner! 
@@ -111,26 +156,26 @@
             </p>
             <div class="voucher-stamp">APPROVED BY BHAI ✅</div>
           </div>
-          <button id="btn-next-2" class="glow-btn">NEXT LEVEL: QUANTUM AURA SCAN 🔮 ➡️</button>
+          <button id="btn-next-2" class="netflix-play-btn">NEXT EPISODE: AURA SCANNER 🔮 ▶</button>
         </div>
       </div>
     </section>
 
     <!-- ==============================================
-         LEVEL 2: QUANTUM BIOMETRIC AURA SCANNER
+         EPISODE 2: BIOMETRIC AURA SCANNER
          ============================================== -->
     <section id="screen-level-2" class="level-screen">
-      <div class="glass-card">
-        <div class="level-header">
-          <span class="level-badge">LEVEL 2 • BIOMETRICS 🔮</span>
+      <div class="netflix-content-card">
+        <div class="ep-header">
+          <span class="ep-meta">SEASON 1 • EPISODE 2 🔮</span>
           <h2>Quantum Aura Scanner</h2>
-          <p>Place & <strong>Hold your thumb</strong> on the sensor to decode Damru's cosmic soul frequency!</p>
+          <p>Place & <strong>Hold thumb on sensor</strong> to decode Damru's celestial Netflix profile!</p>
         </div>
 
         <div class="scanner-pod">
           <div class="scanner-display">
             <div class="hologram-hud">
-              <span class="hud-text">STATUS: TARGET ACQUIRED</span>
+              <span class="hud-text">DAMFLIX AI: SCANNING</span>
               <span class="hud-id">SUBJECT: DAMRU</span>
             </div>
             
@@ -141,7 +186,6 @@
               <div class="radar-line"></div>
             </div>
 
-            <!-- Sensor Touch Button -->
             <div class="biometric-trigger" id="scan-touch-btn">
               <div class="fingerprint-sensor">
                 <div class="sensor-glow-ring"></div>
@@ -155,7 +199,6 @@
           </div>
         </div>
 
-        <!-- Scan Output Card -->
         <div id="scan-results" class="results-box hidden">
           <div class="cosmic-title">🌌 AURA CERTIFICATE OF DAMRU 🌌</div>
           
@@ -189,39 +232,38 @@
             <strong>OFFICIAL DIAGNOSIS:</strong> Supreme Empress of Chaos & Drama. Too cute to be punished! 👑❤️
           </div>
 
-          <!-- Perk 2 Voucher -->
           <div class="perk-voucher">
             <div class="voucher-foil">
-              <div class="voucher-tag">OFFICIAL VOUCHER #002 🎟️</div>
+              <div class="voucher-tag">DAMFLIX PERK #002 🎟️</div>
               <h3>"BHAI DOES YOUR CHORES" PASS</h3>
               <p class="voucher-desc">
-                Redeemable 3 times whenever Damru is too lazy to fetch water, grab the TV remote, or clean her mess!
+                Redeemable 3 times whenever Damru is too lazy to fetch water, grab the remote, or clean her room!
               </p>
               <div class="voucher-stamp">LEGALLY BINDING 📜</div>
             </div>
           </div>
 
-          <button id="btn-next-3" class="glow-btn">NEXT LEVEL: SIBLING LIE DETECTOR 🕵️‍♀️ ➡️</button>
+          <button id="btn-next-3" class="netflix-play-btn">NEXT EPISODE: SIBLING TRUTH TEST 🕵️‍♀️ ▶</button>
         </div>
       </div>
     </section>
 
     <!-- ==============================================
-         LEVEL 3: SIBLING LIE DETECTOR & TRUTH TEST
+         EPISODE 3: SIBLING LIE DETECTOR
          ============================================== -->
     <section id="screen-level-3" class="level-screen">
-      <div class="glass-card">
-        <div class="level-header">
-          <span class="level-badge">LEVEL 3 • TRUTH MACHINE 🕵️‍♀️</span>
+      <div class="netflix-content-card">
+        <div class="ep-header">
+          <span class="ep-meta">SEASON 1 • EPISODE 3 🕵️‍♀️</span>
           <h2>The Sibling Lie Detector</h2>
-          <p>Answer all 3 questions truthfully to unlock the next classified chamber!</p>
+          <p>Answer truthfully to unlock the classified Damflix archives!</p>
         </div>
 
         <div class="truth-machine-wrap">
           <!-- Quiz Step 1 -->
           <div class="quiz-step active" id="quiz-step-1">
             <div class="quiz-photo-frame">
-              <img src="images/damru_3.jpg" alt="Damru Memory 1">
+              <img src="images/damru_3.jpg" alt="Exhibit 1">
               <div class="polaroid-caption">Exhibit A: "Classy & Sassy" 💅</div>
             </div>
             <h3 class="quiz-question">Q1: Who takes 3 hours longer to get ready?</h3>
@@ -235,7 +277,7 @@
           <!-- Quiz Step 2 -->
           <div class="quiz-step hidden" id="quiz-step-2">
             <div class="quiz-photo-frame">
-              <img src="images/damru_4.jpg" alt="Damru Memory 2">
+              <img src="images/damru_4.jpg" alt="Exhibit 2">
               <div class="polaroid-caption">Exhibit B: "Zen Master Damru" 😴✨</div>
             </div>
             <h3 class="quiz-question">Q2: When is peace completely restored in the house?</h3>
@@ -249,7 +291,7 @@
           <!-- Quiz Step 3 -->
           <div class="quiz-step hidden" id="quiz-step-3">
             <div class="quiz-photo-frame">
-              <img src="images/damru_5.jpg" alt="Damru Memory 3">
+              <img src="images/damru_5.jpg" alt="Exhibit 3">
               <div class="polaroid-caption">Exhibit C: "The Million Dollar Smile" 🥰</div>
             </div>
             <h3 class="quiz-question">Q3: Who has the biggest heart and deserves all happiness?</h3>
@@ -261,11 +303,10 @@
           </div>
         </div>
 
-        <!-- Quiz Unlocked Reward -->
         <div id="vault-unlocked" class="results-box hidden">
           <div class="perk-voucher">
             <div class="voucher-foil">
-              <div class="voucher-tag">OFFICIAL VOUCHER #003 🎟️</div>
+              <div class="voucher-tag">DAMFLIX PERK #003 🎟️</div>
               <h3>24/7 MIDNIGHT SNACK & RIDE PASS</h3>
               <p class="voucher-desc">
                 Emergency chocolate run, ice cream cravings, or a ride home at 2 AM with no questions asked!
@@ -273,20 +314,20 @@
               <div class="voucher-stamp">LIFETIME SERVICE 🍫</div>
             </div>
           </div>
-          <button id="btn-next-4" class="glow-btn">NEXT LEVEL: 3D WISH RITUAL 🎂 ➡️</button>
+          <button id="btn-next-4" class="netflix-play-btn">NEXT EPISODE: WISHING SANCTUARY 🎂 ▶</button>
         </div>
       </div>
     </section>
 
     <!-- ==============================================
-         LEVEL 4: THE 3D WISH SANCTUARY & CANDLE
+         EPISODE 4: WISHING SANCTUARY & CANDLE
          ============================================== -->
     <section id="screen-level-4" class="level-screen">
-      <div class="glass-card">
-        <div class="level-header">
-          <span class="level-badge">LEVEL 4 • CELESTIAL WISH 🎂</span>
+      <div class="netflix-content-card">
+        <div class="ep-header">
+          <span class="ep-meta">SEASON 1 • EPISODE 4 🎂</span>
           <h2>The Wishing Sanctuary</h2>
-          <p>Blow into your phone mic or tap the candle flame to seal your birthday wish into the stars!</p>
+          <p>Blow into your phone mic or tap the candle to seal your birthday wish into the cosmos!</p>
         </div>
 
         <div class="cake-display">
@@ -294,68 +335,57 @@
           
           <div class="cake-container">
             <div class="cake">
-              <!-- Animated Candle -->
               <div class="candle" id="interactive-candle">
                 <div class="flame" id="candle-flame">
                   <div class="flame-core"></div>
                 </div>
                 <div class="smoke" id="candle-smoke"></div>
-                <div class="candle-sparkles" id="candle-sparks"></div>
               </div>
 
-              <!-- Top Tier -->
               <div class="cake-tier tier-top">
-                <div class="cream-drips"></div>
                 <div class="berries">🍓 🍒 🍓</div>
               </div>
               
-              <!-- Middle Tier -->
               <div class="cake-tier tier-mid">
                 <div class="cake-ribbon">
                   <span class="ribbon-text">✨ HAPPY BIRTHDAY DAMRU 🥁 ✨</span>
                 </div>
               </div>
               
-              <!-- Bottom Tier -->
-              <div class="cake-tier tier-bot">
-                <div class="cake-pearls"></div>
-              </div>
+              <div class="cake-tier tier-bot"></div>
             </div>
           </div>
 
           <div class="wish-action-area">
-            <button id="btn-blow-candle" class="candle-blow-btn start-pulse">
-              <span class="blow-icon">💨🕯️</span>
+            <button id="btn-blow-candle" class="netflix-play-btn start-pulse">
+              <span>💨🕯️</span>
               <span id="blow-btn-text">BLOW CANDLE & MAKE A WISH!</span>
             </button>
             <p class="whisper-hint">Close your eyes for 3 seconds, make your deepest wish, and blow!</p>
           </div>
         </div>
 
-        <!-- Wish Granted Screen -->
         <div id="wish-success" class="results-box hidden">
           <div class="lantern-toast">
-            🏮 <strong>WISH RECORDED IN THE STARS!</strong><br>
-            20 golden sky lanterns have been released with blessings for you!
+            🏮 <strong>WISH RECORDED IN DAMFLIX VAULT!</strong><br>
+            25 golden sky lanterns have ascended with blessings for you!
           </div>
-          <button id="btn-next-5" class="glow-btn start-pulse">
-            👑 UNLOCK THE GRAND FINALE & HINGLISH SHAYARI ➡️
+          <button id="btn-next-5" class="netflix-play-btn start-pulse">
+            👑 PLAY SEASON FINALE: SHAYARI & VIP PASS ▶
           </button>
         </div>
       </div>
     </section>
 
     <!-- ==============================================
-         LEVEL 5: GRAND CELESTIAL FINALE & SHAYARI
+         EPISODE 5: GRAND FINALE & HINGLISH SHAYARI
          ============================================== -->
     <section id="screen-level-5" class="level-screen">
-      <div class="glass-card finale-card">
-        <div class="royal-banner">LEVEL 5 • GRAND CELESTIAL FINALE 👑</div>
+      <div class="netflix-content-card finale-card">
+        <div class="finale-badge">DAMFLIX ORIGINAL • SEASON 1 FINALE 👑</div>
 
-        <!-- Hero Photo in Golden Locket -->
         <div class="hero-frame-wrap">
           <div class="golden-halo"></div>
-          <div class="rotating-stars"></div>
           <img src="images/damru_1.jpg" alt="Damru Queen" class="hero-portrait">
           <div class="sparkle-crown">👑</div>
         </div>
@@ -366,9 +396,7 @@
         <!-- Hinglish Shayari Box -->
         <div class="shayari-container">
           <div class="shayari-decor">📜 ✨ 💖 ✨ 📜</div>
-          <div id="shayari-text" class="shayari-content">
-            <!-- Dynamic typewriter via JS -->
-          </div>
+          <div id="shayari-text" class="shayari-content"></div>
         </div>
 
         <!-- Secret Bhai's Letter Accordion -->
@@ -379,7 +407,7 @@
           </div>
           <div class="envelope-body hidden" id="envelope-content">
             <p>
-              "Damru, chahe hum kitna bhi ladein, phone ke remote ke liye jhagdein ya ek doosre ki taang kheenchein... tu jaanti hai na ki tera bhai hamesha tere peeche khada hai. 
+              "Damru, chahe hum kitna bhi ladein, TV ke remote ke liye jhagdein ya ek doosre ki taang kheenchein... tu jaanti hai na ki tera bhai hamesha tere peeche khada hai. 
               <br><br>
               Zindagi me jo bhi sapne dekhe, unhe poora karne ki poori koshish karna. Tera bhai hamesha proud rahega tere par! Happy Birthday meri behen! ❤️"
             </p>
@@ -389,7 +417,7 @@
         <!-- Master Golden VIP Pass -->
         <div class="vip-ticket" id="vip-ticket">
           <div class="vip-ticket-header">
-            <div class="ticket-stamp">⭐ SIBLING PRIVILEGE PASS ⭐</div>
+            <div class="ticket-stamp">⭐ DAMFLIX VIP MEMBER PASS ⭐</div>
             <div class="vip-stars">★★★★★</div>
           </div>
           <div class="vip-ticket-body">
@@ -414,7 +442,7 @@
             💬 Send Hug & Thank You to Bhai 🎁
           </a>
           <button id="btn-restart" class="text-link-btn">
-            🔄 Relive Damru's Quest From Level 1
+            🔄 Binge Watch Again From Episode 1
           </button>
         </div>
       </div>
