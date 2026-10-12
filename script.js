@@ -1,4 +1,4 @@
-// --- AUDIO ENGINE (Pure Web Audio API - Zero External Dependencies) ---
+// --- ADVANCED AUDIO ENGINE (Web Audio API + Melody Synthesizer) ---
 class SoundEngine {
   constructor() {
     this.ctx = null;
@@ -41,28 +41,46 @@ class SoundEngine {
   }
 
   playPop() {
-    this.playTone(587.33, 'triangle', 0.12, 0.2); // D5
+    this.playTone(587.33, 'triangle', 0.12, 0.25);
+    this.vibrate(30);
   }
 
-  playCatch() {
+  playCatch(combo = 1) {
     if (this.muted) return;
     this.init();
-    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
-    notes.forEach((freq, idx) => {
-      setTimeout(() => this.playTone(freq, 'sine', 0.15, 0.12), idx * 60);
-    });
+    const baseFreq = 440 + combo * 80;
+    this.playTone(baseFreq, 'sine', 0.15, 0.2);
+    setTimeout(() => this.playTone(baseFreq * 1.25, 'triangle', 0.18, 0.2), 60);
+    this.vibrate(40);
   }
 
   playRoast() {
-    this.playTone(180, 'sawtooth', 0.25, 0.15);
+    this.playTone(160, 'sawtooth', 0.35, 0.25);
+    this.vibrate([80, 50, 80]);
   }
 
   playFanfare() {
     if (this.muted) return;
     this.init();
-    const melody = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    const melody = [523.25, 659.25, 783.99, 1046.50];
     melody.forEach((freq, i) => {
-      setTimeout(() => this.playTone(freq, 'triangle', 0.35, 0.2), i * 110);
+      setTimeout(() => this.playTone(freq, 'triangle', 0.3, 0.22), i * 110);
+    });
+    this.vibrate([60, 40, 100]);
+  }
+
+  playHappyBirthdayChime() {
+    if (this.muted) return;
+    this.init();
+    // G4 G4 A4 G4 C5 B4
+    const notes = [
+      { f: 392, d: 250 }, { f: 392, d: 250 }, { f: 440, d: 400 },
+      { f: 392, d: 400 }, { f: 523, d: 400 }, { f: 493.88, d: 700 }
+    ];
+    let offset = 0;
+    notes.forEach(n => {
+      setTimeout(() => this.playTone(n.f, 'triangle', n.d / 1000, 0.25), offset);
+      offset += n.d + 50;
     });
   }
 
@@ -70,7 +88,7 @@ class SoundEngine {
     if (this.muted) return;
     this.init();
     try {
-      const bufferSize = this.ctx.sampleRate * 1.5;
+      const bufferSize = this.ctx.sampleRate * 1.6;
       const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) {
@@ -80,11 +98,11 @@ class SoundEngine {
       noise.buffer = buffer;
       const filter = this.ctx.createBiquadFilter();
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(400, this.ctx.currentTime);
-      filter.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 1.2);
+      filter.frequency.setValueAtTime(450, this.ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 1.4);
       const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.2);
+      gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.4);
       noise.connect(filter);
       filter.connect(gain);
       gain.connect(this.ctx.destination);
@@ -97,31 +115,38 @@ class SoundEngine {
   startAmbientChimes() {
     if (this.bgInterval) return;
     const chords = [
-      [329.63, 440, 554.37], // E4, A4, C#5
-      [293.66, 369.99, 440], // D4, F#4, A4
-      [392.00, 493.88, 587.33], // G4, B4, D5
-      [440.00, 554.37, 659.25]  // A4, C#5, E5
+      [329.63, 440, 554.37],
+      [293.66, 369.99, 440],
+      [392.00, 493.88, 587.33],
+      [440.00, 554.37, 659.25]
     ];
     let chordIdx = 0;
     this.bgInterval = setInterval(() => {
       if (!this.muted && this.ctx) {
         const chord = chords[chordIdx % chords.length];
         chord.forEach((freq, i) => {
-          setTimeout(() => this.playTone(freq, 'sine', 1.8, 0.03), i * 150);
+          setTimeout(() => this.playTone(freq, 'sine', 2.0, 0.025), i * 160);
         });
         chordIdx++;
       }
-    }, 3200);
+    }, 3400);
+  }
+
+  vibrate(pattern) {
+    if (navigator.vibrate) {
+      try { navigator.vibrate(pattern); } catch (e) {}
+    }
   }
 }
 
 const sound = new SoundEngine();
 
-// --- BACKGROUND CANVAS (STARS & FLOATING LANTERNS) ---
+// --- BACKGROUND COSMIC CANVAS (Stars & Glowing Floating Sky Lanterns) ---
 const bgCanvas = document.getElementById('bg-canvas');
 const bgCtx = bgCanvas.getContext('2d');
 let stars = [];
 let lanterns = [];
+let shootingStars = [];
 
 function resizeBgCanvas() {
   bgCanvas.width = window.innerWidth;
@@ -130,32 +155,43 @@ function resizeBgCanvas() {
 window.addEventListener('resize', resizeBgCanvas);
 resizeBgCanvas();
 
-// Init Stars
-for (let i = 0; i < 70; i++) {
+for (let i = 0; i < 80; i++) {
   stars.push({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    size: Math.random() * 2 + 0.8,
+    size: Math.random() * 2.2 + 0.6,
     alpha: Math.random(),
     speed: Math.random() * 0.02 + 0.005
   });
 }
 
-function spawnLantern() {
+function spawnShootingStar() {
+  shootingStars.push({
+    x: Math.random() * window.innerWidth * 0.8,
+    y: Math.random() * window.innerHeight * 0.3,
+    length: Math.random() * 80 + 50,
+    speed: Math.random() * 10 + 12,
+    angle: Math.PI / 4,
+    alpha: 1
+  });
+}
+setInterval(spawnShootingStar, 4000);
+
+function spawnLantern(label = '✨') {
   lanterns.push({
     x: Math.random() * (window.innerWidth - 60) + 30,
-    y: window.innerHeight + 20,
-    size: Math.random() * 12 + 14,
-    speedY: Math.random() * 1.2 + 0.8,
-    swing: Math.random() * 2,
-    alpha: 0.85
+    y: window.innerHeight + 30,
+    size: Math.random() * 14 + 18,
+    speedY: Math.random() * 1.3 + 0.9,
+    label: label,
+    alpha: 0.9
   });
 }
 
 function animateBg() {
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
 
-  // Draw Stars
+  // Stars
   stars.forEach(s => {
     s.alpha += s.speed;
     if (s.alpha > 1 || s.alpha < 0.2) s.speed = -s.speed;
@@ -165,29 +201,47 @@ function animateBg() {
     bgCtx.fill();
   });
 
-  // Draw Floating Sky Lanterns
+  // Shooting Stars
+  for (let i = shootingStars.length - 1; i >= 0; i--) {
+    const ss = shootingStars[i];
+    ss.x += Math.cos(ss.angle) * ss.speed;
+    ss.y += Math.sin(ss.angle) * ss.speed;
+    ss.alpha -= 0.025;
+
+    bgCtx.save();
+    bgCtx.strokeStyle = `rgba(255, 230, 150, ${ss.alpha})`;
+    bgCtx.lineWidth = 2;
+    bgCtx.beginPath();
+    bgCtx.moveTo(ss.x, ss.y);
+    bgCtx.lineTo(ss.x - Math.cos(ss.angle) * ss.length, ss.y - Math.sin(ss.angle) * ss.length);
+    bgCtx.stroke();
+    bgCtx.restore();
+
+    if (ss.alpha <= 0) shootingStars.splice(i, 1);
+  }
+
+  // Floating Lanterns
   for (let i = lanterns.length - 1; i >= 0; i--) {
     const l = lanterns[i];
     l.y -= l.speedY;
-    l.x += Math.sin(l.y * 0.02) * 0.5;
+    l.x += Math.sin(l.y * 0.02) * 0.7;
 
-    // Glowing Lantern Body
     bgCtx.save();
-    bgCtx.shadowBlur = 18;
+    bgCtx.shadowBlur = 22;
     bgCtx.shadowColor = '#ffbe3b';
-    bgCtx.fillStyle = `rgba(255, 170, 50, ${l.alpha})`;
+    bgCtx.fillStyle = `rgba(255, 175, 45, ${l.alpha})`;
     bgCtx.beginPath();
-    bgCtx.roundRect(l.x, l.y, l.size, l.size * 1.3, [3, 3, 5, 5]);
+    bgCtx.roundRect(l.x, l.y, l.size, l.size * 1.35, [4, 4, 6, 6]);
     bgCtx.fill();
 
-    // Inner bright flame core
+    // Glow center
     bgCtx.fillStyle = `rgba(255, 255, 220, ${l.alpha})`;
     bgCtx.beginPath();
-    bgCtx.arc(l.x + l.size / 2, l.y + l.size * 0.9, l.size * 0.25, 0, Math.PI * 2);
+    bgCtx.arc(l.x + l.size / 2, l.y + l.size * 0.85, l.size * 0.26, 0, Math.PI * 2);
     bgCtx.fill();
     bgCtx.restore();
 
-    if (l.y < -50) lanterns.splice(i, 1);
+    if (l.y < -60) lanterns.splice(i, 1);
   }
 
   requestAnimationFrame(animateBg);
@@ -198,7 +252,6 @@ animateBg();
 const fwCanvas = document.getElementById('fireworks-canvas');
 const fwCtx = fwCanvas.getContext('2d');
 let particles = [];
-let fireworkActive = false;
 
 function resizeFwCanvas() {
   fwCanvas.width = window.innerWidth;
@@ -207,11 +260,11 @@ function resizeFwCanvas() {
 window.addEventListener('resize', resizeFwCanvas);
 resizeFwCanvas();
 
-function triggerExplosion(x, y, count = 40) {
-  const colors = ['#ff3377', '#ffbe3b', '#00f2fe', '#a855f7', '#ffffff', '#ffd700'];
+function triggerExplosion(x, y, count = 45) {
+  const colors = ['#ff2a85', '#ffbe3b', '#00f2fe', '#a855f7', '#ffffff', '#ffd700'];
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = Math.random() * 6 + 2;
+    const speed = Math.random() * 7 + 2;
     particles.push({
       x: x,
       y: y,
@@ -220,7 +273,7 @@ function triggerExplosion(x, y, count = 40) {
       color: colors[Math.floor(Math.random() * colors.length)],
       alpha: 1,
       decay: Math.random() * 0.02 + 0.015,
-      size: Math.random() * 3 + 2
+      size: Math.random() * 3.2 + 2
     });
   }
 }
@@ -231,14 +284,14 @@ function animateFireworks() {
     const p = particles[i];
     p.x += p.vx;
     p.y += p.vy;
-    p.vy += 0.08; // gravity
+    p.vy += 0.09;
     p.alpha -= p.decay;
 
     fwCtx.beginPath();
     fwCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
     fwCtx.fillStyle = p.color;
     fwCtx.globalAlpha = Math.max(0, p.alpha);
-    fwCtx.shadowBlur = 8;
+    fwCtx.shadowBlur = 10;
     fwCtx.shadowColor = p.color;
     fwCtx.fill();
     fwCtx.globalAlpha = 1;
@@ -251,23 +304,33 @@ animateFireworks();
 
 function blastConfetti() {
   sound.playFanfare();
-  for (let i = 0; i < 5; i++) {
+  flashScreen();
+  for (let i = 0; i < 6; i++) {
     setTimeout(() => {
       triggerExplosion(
         Math.random() * (window.innerWidth * 0.8) + window.innerWidth * 0.1,
         Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.1,
         50
       );
-    }, i * 250);
+    }, i * 220);
   }
 }
 
+function flashScreen() {
+  const flash = document.getElementById('flash-overlay');
+  flash.style.opacity = '0.4';
+  setTimeout(() => { flash.style.opacity = '0'; }, 150);
+}
+
 // --- SCREEN NAVIGATION CONTROLLER ---
-function showScreen(screenId) {
+const levelIndicator = document.getElementById('level-indicator');
+
+function showScreen(screenId, levelNum = 0) {
   document.querySelectorAll('.level-screen').forEach(el => el.classList.remove('active'));
   const target = document.getElementById(screenId);
   if (target) {
     target.classList.add('active');
+    levelIndicator.textContent = `LVL ${levelNum}/5`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
@@ -285,20 +348,23 @@ document.getElementById('btn-start').addEventListener('click', () => {
   sound.init();
   sound.startAmbientChimes();
   sound.playPop();
-  showScreen('screen-level-1');
+  showScreen('screen-level-1', 1);
 });
 
 // ==========================================
-// LEVEL 1: SUGAR RUSH REFLEX MINI-GAME
+// LEVEL 1: SUGAR RUSH REFLEX ARCADE
 // ==========================================
 let gameScore = 0;
+let comboMultiplier = 1;
 let gameTimeLeft = 15;
 let gameInterval = null;
 let spawnInterval = null;
 const gameBoard = document.getElementById('game-board');
 const scoreEl = document.getElementById('game-score');
+const comboEl = document.getElementById('game-combo');
 const timerEl = document.getElementById('game-timer');
 const overlayEl = document.getElementById('game-start-overlay');
+const comboToast = document.getElementById('combo-toast');
 const reward1El = document.getElementById('reward-1');
 
 document.getElementById('btn-start-game').addEventListener('click', startGame);
@@ -306,66 +372,68 @@ document.getElementById('btn-start-game').addEventListener('click', startGame);
 function startGame() {
   sound.init();
   gameScore = 0;
+  comboMultiplier = 1;
   gameTimeLeft = 15;
   scoreEl.textContent = '0';
+  comboEl.textContent = 'x1';
   timerEl.textContent = '15';
   overlayEl.classList.add('hidden');
   reward1El.classList.add('hidden');
 
-  // Clear previous items
   gameBoard.querySelectorAll('.falling-item').forEach(el => el.remove());
 
-  // Timer loop
   gameInterval = setInterval(() => {
     gameTimeLeft--;
     timerEl.textContent = gameTimeLeft;
-    if (gameTimeLeft <= 0) {
-      endGame(false);
-    }
+    if (gameTimeLeft <= 0) endGame(false);
   }, 1000);
 
-  // Spawn loop
-  spawnInterval = setInterval(spawnTreat, 550);
+  spawnInterval = setInterval(spawnTreat, 500);
 }
 
 function spawnTreat() {
   if (gameScore >= 10) return;
-  const treats = ['🎂', '🧁', '🍦', '🍫', '🎁', '🍓', '📚'];
+  const treats = ['🎂', '🧁', '🍦', '🍫', '🎁', '🍓', '🩴', '📚'];
   const itemChar = treats[Math.floor(Math.random() * treats.length)];
-  const isBook = itemChar === '📚';
+  const isRoast = itemChar === '🩴' || itemChar === '📚';
 
   const item = document.createElement('div');
   item.className = 'falling-item';
   item.textContent = itemChar;
   item.style.left = `${Math.random() * 80 + 5}%`;
-  item.style.animationDuration = `${Math.random() * 1.2 + 1.8}s`;
+  item.style.animationDuration = `${Math.random() * 1.1 + 1.6}s`;
 
   item.addEventListener('pointerdown', (e) => {
     e.stopPropagation();
-    if (isBook) {
+    if (isRoast) {
       sound.playRoast();
+      comboMultiplier = 1;
+      comboEl.textContent = 'x1';
       gameScore = Math.max(0, gameScore - 1);
-      item.textContent = '💨';
+      item.textContent = '💥';
     } else {
-      sound.playCatch();
+      sound.playCatch(comboMultiplier);
       gameScore++;
+      comboMultiplier = Math.min(5, comboMultiplier + 1);
+      comboEl.textContent = `x${comboMultiplier}`;
+      
+      if (comboMultiplier >= 3) {
+        comboToast.textContent = `COMBO x${comboMultiplier}! 🔥`;
+        comboToast.classList.remove('hidden');
+        setTimeout(() => comboToast.classList.add('hidden'), 600);
+      }
+
       triggerExplosion(e.clientX, e.clientY, 15);
       item.textContent = '✨';
     }
     scoreEl.textContent = gameScore;
     setTimeout(() => item.remove(), 100);
 
-    if (gameScore >= 10) {
-      endGame(true);
-    }
+    if (gameScore >= 10) endGame(true);
   });
 
   gameBoard.appendChild(item);
-
-  // Auto remove after animation
-  setTimeout(() => {
-    if (item.parentNode) item.remove();
-  }, 3000);
+  setTimeout(() => { if (item.parentNode) item.remove(); }, 2800);
 }
 
 function endGame(won) {
@@ -385,15 +453,15 @@ function endGame(won) {
 
 document.getElementById('btn-next-2').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-level-2');
+  showScreen('screen-level-2', 2);
 });
 
 // ==========================================
-// LEVEL 2: AURA & VIBE SCANNER
+// LEVEL 2: QUANTUM BIOMETRIC AURA SCANNER
 // ==========================================
 const scanBtn = document.getElementById('scan-touch-btn');
 const scanProgress = document.getElementById('scan-progress');
-const scanContainer = document.querySelector('.scanner-photo-wrap');
+const scanContainer = document.getElementById('scan-photo-wrap');
 const scanPrompt = document.getElementById('scan-prompt-text');
 const scanResults = document.getElementById('scan-results');
 let scanTimer = null;
@@ -404,18 +472,19 @@ function startScanning(e) {
   sound.init();
   scanContainer.classList.add('scanning');
   scanBtn.classList.add('active');
-  scanPrompt.textContent = 'SCANNING DAMRU FREQUENCIES... 📡';
+  scanPrompt.textContent = 'ANALYZING CELESTIAL FREQUENCIES... 📡';
 
   scanTimer = setInterval(() => {
-    scanPercent += 4;
+    scanPercent += 3.5;
     scanProgress.style.width = `${scanPercent}%`;
-    sound.playTone(300 + scanPercent * 6, 'sine', 0.08, 0.05);
+    sound.playTone(320 + scanPercent * 8, 'sine', 0.08, 0.06);
+    sound.vibrate(20);
 
     if (scanPercent >= 100) {
       clearInterval(scanTimer);
       finishScan();
     }
-  }, 70);
+  }, 65);
 }
 
 function stopScanning() {
@@ -425,7 +494,7 @@ function stopScanning() {
     scanProgress.style.width = '0%';
     scanContainer.classList.remove('scanning');
     scanBtn.classList.remove('active');
-    scanPrompt.textContent = 'PRESS & HOLD TO SCAN ✨';
+    scanPrompt.textContent = 'PRESS & HOLD FINGER TO SCAN';
   }
 }
 
@@ -443,46 +512,98 @@ window.addEventListener('pointercancel', stopScanning);
 
 document.getElementById('btn-next-3').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-level-3');
+  showScreen('screen-level-3', 3);
 });
 
 // ==========================================
-// LEVEL 3: POLAROID VAULT
+// LEVEL 3: SIBLING LIE DETECTOR & TRUTH TEST
 // ==========================================
-const cards = document.querySelectorAll('.polaroid-card');
-const vaultUnlocked = document.getElementById('vault-unlocked');
-let flippedCards = new Set();
+let currentQuizStep = 1;
 
-cards.forEach(card => {
-  card.addEventListener('click', () => {
-    sound.playPop();
-    card.classList.toggle('flipped');
-    const id = card.getAttribute('data-card');
-    flippedCards.add(id);
-
-    if (flippedCards.size >= 3) {
-      setTimeout(() => {
-        if (vaultUnlocked.classList.contains('hidden')) {
-          blastConfetti();
-          vaultUnlocked.classList.remove('hidden');
-        }
-      }, 500);
-    }
-  });
-});
+window.handleQuizAnswer = function(questionNum, answer) {
+  sound.init();
+  const feedbackEl = document.getElementById(`quiz-feedback-${questionNum}`);
+  
+  if (questionNum === 1) {
+    sound.playCatch(2);
+    feedbackEl.textContent = "LIE DETECTOR: 100% FACT! Bhai waited for 3 hours! 😂";
+    feedbackEl.classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('quiz-step-1').classList.add('hidden');
+      document.getElementById('quiz-step-2').classList.remove('hidden');
+      currentQuizStep = 2;
+    }, 1200);
+  } else if (questionNum === 2) {
+    sound.playCatch(3);
+    feedbackEl.textContent = "TRUTH VERIFIED: Household enters ceasefire when Damru sleeps! 😴🕊️";
+    feedbackEl.classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('quiz-step-2').classList.add('hidden');
+      document.getElementById('quiz-step-3').classList.remove('hidden');
+      currentQuizStep = 3;
+    }, 1200);
+  } else if (questionNum === 3) {
+    blastConfetti();
+    feedbackEl.textContent = "CORRECT! Damru is the world's most loved sister! ❤️✨";
+    feedbackEl.classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('quiz-step-3').classList.add('hidden');
+      document.getElementById('vault-unlocked').classList.remove('hidden');
+    }, 1300);
+  }
+};
 
 document.getElementById('btn-next-4').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-level-4');
+  showScreen('screen-level-4', 4);
 });
 
 // ==========================================
-// LEVEL 4: THE WISH SANCTUARY & CANDLE
+// LEVEL 4: 3D WISH SANCTUARY & CANDLE
 // ==========================================
-const candle = document.querySelector('.candle');
+const candle = document.getElementById('interactive-candle');
 const blowBtn = document.getElementById('btn-blow-candle');
+const blowBtnText = document.getElementById('blow-btn-text');
 const wishSuccess = document.getElementById('wish-success');
 let wishMade = false;
+
+// Attempt Microphone Blow Detection
+let micStream = null;
+let audioContext = null;
+let analyser = null;
+
+async function setupMicDetection() {
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioContext.createAnalyser();
+    const source = audioContext.createMediaStreamSource(micStream);
+    source.connect(analyser);
+    analyser.fftSize = 256;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    function checkBlow() {
+      if (wishMade) return;
+      analyser.getByteFrequencyData(dataArray);
+      let sum = 0;
+      for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
+      let avg = sum / bufferLength;
+
+      // Blow sound causes broad high average noise
+      if (avg > 65) {
+        blowOutCandle();
+        if (micStream) micStream.getTracks().forEach(t => t.stop());
+      } else {
+        requestAnimationFrame(checkBlow);
+      }
+    }
+    checkBlow();
+  } catch (err) {
+    // Mic permission denied or unsupported - button fallback works seamlessly
+    console.log('Mic fallback active');
+  }
+}
 
 function blowOutCandle() {
   if (wishMade) return;
@@ -491,25 +612,41 @@ function blowOutCandle() {
   sound.playBlowWind();
   candle.classList.add('blown');
   blowBtn.disabled = true;
-  blowBtn.textContent = '✨ WISH GRANTED & SEALED! ✨';
+  blowBtnText.textContent = '✨ WISH RECORDED & SEALED! ✨';
+
+  // Play Happy Birthday chime
+  setTimeout(() => {
+    sound.playHappyBirthdayChime();
+  }, 400);
 
   // Release sky lanterns into night sky
-  for (let i = 0; i < 20; i++) {
-    setTimeout(spawnLantern, i * 140);
+  for (let i = 0; i < 25; i++) {
+    setTimeout(() => spawnLantern('🏮'), i * 120);
   }
 
   setTimeout(() => {
     blastConfetti();
     wishSuccess.classList.remove('hidden');
-  }, 1000);
+  }, 1200);
 }
 
-blowBtn.addEventListener('click', blowOutCandle);
-candle.addEventListener('click', blowOutCandle);
+blowBtn.addEventListener('click', () => {
+  sound.init();
+  blowOutCandle();
+});
+candle.addEventListener('click', () => {
+  sound.init();
+  blowOutCandle();
+});
+
+// Setup mic when reaching Level 4
+document.getElementById('btn-next-4').addEventListener('click', () => {
+  setTimeout(setupMicDetection, 1000);
+});
 
 document.getElementById('btn-next-5').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-level-5');
+  showScreen('screen-level-5', 5);
   startGrandFinale();
 });
 
@@ -527,8 +664,9 @@ const shayariLines = [
 ];
 
 function startGrandFinale() {
-  // Continuous celebration fireworks
   blastConfetti();
+  
+  // Continuous celebratory fireworks & lanterns
   setInterval(() => {
     if (document.getElementById('screen-level-5').classList.contains('active')) {
       triggerExplosion(
@@ -536,8 +674,9 @@ function startGrandFinale() {
         Math.random() * (window.innerHeight * 0.4) + 60,
         35
       );
+      if (Math.random() > 0.5) spawnLantern('✨');
     }
-  }, 1800);
+  }, 1600);
 
   // Typewriter effect for Shayari
   const container = document.getElementById('shayari-text');
@@ -551,11 +690,11 @@ function startGrandFinale() {
       if (charIdx < currentLine.length) {
         container.innerHTML += currentLine[charIdx] === '\n' ? '<br>' : currentLine[charIdx];
         charIdx++;
-        setTimeout(typeLine, 28);
+        setTimeout(typeLine, 26);
       } else {
         lineIdx++;
         charIdx = 0;
-        setTimeout(typeLine, 220);
+        setTimeout(typeLine, 240);
       }
     }
   }
@@ -563,10 +702,21 @@ function startGrandFinale() {
 
   // Prefill WhatsApp Share Message
   const shareMsg = encodeURIComponent(
-    "Bhai thank you so much! Ye birthday quest aur Golden VIP pass bhot mast tha 🥹❤️🥁 Best surprise ever!"
+    "Bhai thank you so much! Ye birthday surprise aur Golden VIP pass bhot zyada mast tha 🥹❤️🥁 Best birthday ever!"
   );
   document.getElementById('btn-whatsapp-share').href = `https://api.whatsapp.com/send?text=${shareMsg}`;
 }
+
+// Secret Envelope Toggle
+const envelopeToggle = document.getElementById('envelope-toggle');
+const envelopeContent = document.getElementById('envelope-content');
+const envelopeArrow = document.getElementById('envelope-arrow');
+
+envelopeToggle.addEventListener('click', () => {
+  sound.playPop();
+  envelopeContent.classList.toggle('hidden');
+  envelopeArrow.textContent = envelopeContent.classList.contains('hidden') ? '▼' : '▲';
+});
 
 // Screenshot Hint
 document.getElementById('btn-screenshot-hint').addEventListener('click', () => {
@@ -576,5 +726,5 @@ document.getElementById('btn-screenshot-hint').addEventListener('click', () => {
 // Restart Quest
 document.getElementById('btn-restart').addEventListener('click', () => {
   sound.playPop();
-  showScreen('screen-intro');
+  showScreen('screen-intro', 0);
 });
