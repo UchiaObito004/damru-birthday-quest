@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mission: Damru's Birthday Royale 🥁✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Canvas Background -->
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="fireworks-canvas"></canvas>
+
+  <!-- Audio Controls Header -->
+  <div class="top-nav">
+    <div class="mission-tag">
+      <span class="pulse-dot"></span> TOP SECRET: DAMRU 🥁
+    </div>
+    <button id="sound-toggle" class="sound-btn" aria-label="Toggle Sound">
+      <span id="sound-icon">🔊</span>
+    </button>
+  </div>
+
+  <!-- Main Container -->
+  <main class="quest-container">
+
+    <!-- INTRO SCREEN -->
+    <section id="screen-intro" class="level-screen active">
+      <div class="glass-card hero-card">
+        <div class="avatar-badge-wrap">
+          <img src="images/damru_1.jpg" alt="Damru" class="intro-avatar">
+          <div class="crown-badge">👑</div>
+        </div>
+        <div class="title-tag">LEVEL 0 OF 5 • CLASSIFIED BIRTHDAY ARCHIVE</div>
+        <h1 class="glow-title">MISSION:<br><span class="accent-text">DAMRU'S BDAY ROYALE</span> 🥁🤪</h1>
+        <p class="hero-desc">
+          Warning: Unlocking your official birthday gifts requires clearing <strong>5 Special Levels</strong>. Are you brave enough, Meri Nautanki Behan?
+        </p>
+
+        <div class="rules-pill-box">
+          <div class="pill">🎮 5 Interactive Levels</div>
+          <div class="pill">🎟️ 3 Real-Life Brother Perks</div>
+          <div class="pill">✨ Soulful Hinglish Shayari</div>
+        </div>
+
+        <button id="btn-start" class="glow-btn start-pulse">
+          <span>START THE QUEST 🚀</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- LEVEL 1: SUGAR RUSH REFLEX -->
+    <section id="screen-level-1" class="level-screen">
+      <div class="glass-card">
+        <div class="level-header">
+          <span class="level-badge">LEVEL 1 🍰</span>
+          <h2>The Sugar Rush Reflex</h2>
+          <p>Catch <strong>10 Birthday Treats</strong> before time runs out! Watch out for brother's study books 📚!</p>
+        </div>
+
+        <div class="game-stats">
+          <div class="stat-box">Score: <span id="game-score">0</span> / 10</div>
+          <div class="stat-box">Time: <span id="game-timer">15</span>s</div>
+        </div>
+
+        <div id="game-board" class="game-arena">
+          <div id="game-start-overlay" class="arena-overlay">
+            <button id="btn-start-game" class="secondary-btn">TAP TO PLAY! 🎮</button>
+          </div>
+        </div>
+
+        <!-- Level 1 Reward Modal -->
+        <div id="reward-1" class="reward-card hidden">
+          <div class="reward-icon">🎟️✨</div>
+          <h3>PERK #1 UNLOCKED!</h3>
+          <p class="perk-title">"The Foodie Sister Immunity Pass"</p>
+          <p class="perk-desc">Brother pays for your next Swiggy/Zomato or Cafe outing! Zero arguments allowed.</p>
+          <button id="btn-next-2" class="glow-btn">NEXT LEVEL: AURA SCANNER 🔮 ➡️</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEVEL 2: AURA & VIBE SCANNER -->
+    <section id="screen-level-2" class="level-screen">
+      <div class="glass-card">
+        <div class="level-header">
+          <span class="level-badge">LEVEL 2 🔮</span>
+          <h2>The Damru Vibe Scanner</h2>
+          <p>Hold your finger down to decode Damru's celestial personality frequencies!</p>
+        </div>
+
+        <div class="scanner-container">
+          <div class="scanner-photo-wrap">
+            <img src="images/damru_2.jpg" alt="Scanning Damru" class="scan-target-img">
+            <div class="scan-laser" id="scan-laser"></div>
+            <div class="scan-rings">
+              <div class="ring ring-1"></div>
+              <div class="ring ring-2"></div>
+            </div>
+          </div>
+
+          <div class="hold-scanner-area" id="scan-touch-btn">
+            <div class="fingerprint-icon">🖲️</div>
+            <span id="scan-prompt-text">PRESS & HOLD TO SCAN ✨</span>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="scan-progress"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="scan-results" class="results-box hidden">
+          <div class="aura-tag">🌌 SCAN COMPLETE: AURA VERIFIED!</div>
+          <div class="vibe-meter-grid">
+            <div class="vibe-item">
+              <span class="vibe-label">Drama & Nautanki:</span>
+              <div class="vibe-bar"><div class="vibe-fill" style="width: 98%;">98% 🎭</div></div>
+            </div>
+            <div class="vibe-item">
+              <span class="vibe-label">Cutest Smile:</span>
+              <div class="vibe-bar"><div class="vibe-fill" style="width: 100%;">100% 💖</div></div>
+            </div>
+            <div class="vibe-item">
+              <span class="vibe-label">Blaming Brother:</span>
+              <div class="vibe-bar"><div class="vibe-fill" style="width: 95%;">95% 😈</div></div>
+            </div>
+          </div>
+
+          <div class="reward-box">
+            <div class="reward-icon">🎟️⚡</div>
+            <h3>PERK #2 UNLOCKED!</h3>
+            <p class="perk-title">"The 'Bhai Does Your Chores' Ticket"</p>
+            <p class="perk-desc">Redeemable whenever you feel too lazy to get water or clean up your room.</p>
+          </div>
+
+          <button id="btn-next-3" class="glow-btn">NEXT LEVEL: SIBLING VAULT 📸 ➡️</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEVEL 3: SIBLING MEMORY VAULT -->
+    <section id="screen-level-3" class="level-screen">
+      <div class="glass-card">
+        <div class="level-header">
+          <span class="level-badge">LEVEL 3 📸</span>
+          <h2>The Polaroid Vault</h2>
+          <p>Tap and flip all 3 memory cards to inspect classified Damru files!</p>
+        </div>
+
+        <div class="cards-grid">
+          <!-- Card 1 -->
+          <div class="polaroid-card" data-card="1">
+            <div class="card-inner">
+              <div class="card-front">
+                <img src="images/damru_3.jpg" alt="Memory 1">
+                <span class="polaroid-label">Tap to Flip 🔄</span>
+              </div>
+              <div class="card-back">
+                <div class="sticker">💅👑</div>
+                <h4>Exhibit A: "Gorgeous Mode"</h4>
+                <p>"Pose 10/10, Attitude 100/10, Sibling Patience 0/10 🤪"</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="polaroid-card" data-card="2">
+            <div class="card-inner">
+              <div class="card-front">
+                <img src="images/damru_4.jpg" alt="Memory 2">
+                <span class="polaroid-label">Tap to Flip 🔄</span>
+              </div>
+              <div class="card-back">
+                <div class="sticker">😴✨</div>
+                <h4>Exhibit B: "Zen Damru"</h4>
+                <p>"When eyes are closed and household peace is momentarily restored!"</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="polaroid-card" data-card="3">
+            <div class="card-inner">
+              <div class="card-front">
+                <img src="images/damru_5.jpg" alt="Memory 3">
+                <span class="polaroid-label">Tap to Flip 🔄</span>
+              </div>
+              <div class="card-back">
+                <div class="sticker">🤫😇</div>
+                <h4>Exhibit C: "The Innocent Smile"</h4>
+                <p>"The face she makes right before saying 'Bhaiya, ek help chahiye tha please!' 😂"</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="vault-unlocked" class="results-box hidden">
+          <div class="reward-box">
+            <div class="reward-icon">🎟️🍫</div>
+            <h3>PERK #3 UNLOCKED!</h3>
+            <p class="perk-title">"24/7 Late Night Snack & Ride Pass"</p>
+            <p class="perk-desc">Brother is on call whenever you need emergency chocolates or a ride home!</p>
+          </div>
+          <button id="btn-next-4" class="glow-btn">NEXT LEVEL: MAKE A WISH 🎂 ➡️</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEVEL 4: THE WISH SANCTUARY -->
+    <section id="screen-level-4" class="level-screen">
+      <div class="glass-card">
+        <div class="level-header">
+          <span class="level-badge">LEVEL 4 🎂</span>
+          <h2>The Wish Sanctuary</h2>
+          <p>Tap the candle flame (or blow into your screen) to make your secret birthday wish!</p>
+        </div>
+
+        <div class="cake-display">
+          <div class="cake-container">
+            <!-- Glowing 3D-styled Cake -->
+            <div class="cake">
+              <div class="candle">
+                <div class="flame" id="candle-flame"></div>
+                <div class="smoke" id="candle-smoke"></div>
+              </div>
+              <div class="cake-top">
+                <div class="icing"></div>
+                <div class="strawberry">🍓</div>
+                <div class="strawberry right">🍓</div>
+              </div>
+              <div class="cake-middle">
+                <span class="cake-text">HAPPY BDAY DAMRU 🥁</span>
+              </div>
+              <div class="cake-bottom"></div>
+            </div>
+          </div>
+
+          <div class="wish-action-area">
+            <button id="btn-blow-candle" class="secondary-btn glow-pulse">
+              🕯️ TAP TO BLOW CANDLE & MAKE A WISH! ✨
+            </button>
+            <p class="whisper-hint">Close your eyes for 3 seconds and ask for what you truly desire...</p>
+          </div>
+        </div>
+
+        <div id="wish-success" class="results-box hidden">
+          <div class="lantern-toast">
+            🏮 Sky lanterns released into the cosmos! Your wish has been recorded.
+          </div>
+          <button id="btn-next-5" class="glow-btn start-pulse">
+            👑 UNLOCK THE GRAND FINALE & SHAYARI ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEVEL 5: GRAND FINALE & HINGLISH SHAYARI -->
+    <section id="screen-level-5" class="level-screen">
+      <div class="glass-card finale-card">
+        <div class="level-badge gold-badge">LEVEL 5 • GRAND FINALE 👑</div>
+
+        <!-- Hero Photo in Golden Frame -->
+        <div class="hero-frame-wrap">
+          <div class="golden-halo"></div>
+          <img src="images/damru_1.jpg" alt="Damru Queen" class="hero-portrait">
+          <div class="sparkle-crown">✨👑✨</div>
+        </div>
+
+        <h1 class="grand-heading">Happy Birthday, Damru! 🥁💖</h1>
+        <p class="sister-tag">Meri Sabse Pyaari & Sabse Nautanki Behan</p>
+
+        <!-- Hinglish Shayari Box -->
+        <div class="shayari-container">
+          <div class="feather-decor">📜 ✨</div>
+          <div id="shayari-text" class="shayari-content">
+            <!-- Populated via Typewriter in JS -->
+          </div>
+        </div>
+
+        <!-- Master VIP Brother Pass -->
+        <div class="vip-ticket" id="vip-ticket">
+          <div class="vip-ticket-header">
+            <div class="ticket-stamp">OFFICIAL SIBLING CONTRACT</div>
+            <div class="vip-stars">★★★★★</div>
+          </div>
+          <div class="vip-ticket-body">
+            <h3>THE GOLDEN DAMRU VIP PASS 🎟️</h3>
+            <p class="ticket-to">Issued to: <strong>Damru (Chief Trouble Maker)</strong></p>
+            <ul class="ticket-perks">
+              <li>✅ <strong>Perk 1:</strong> 1x Free Food / Cafe Outing on Brother</li>
+              <li>✅ <strong>Perk 2:</strong> 3x Get-Out-of-Trouble / Lazy Day Passes</li>
+              <li>✅ <strong>Perk 3:</strong> 24/7 Emergency Snack & Brother Escort</li>
+            </ul>
+            <div class="ticket-seal">
+              <span>GUARANTEED FOR LIFE BY BHAI ❤️</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="finale-actions">
+          <button id="btn-screenshot-hint" class="secondary-btn">
+            📸 Take a Screenshot of this VIP Pass!
+          </button>
+          <a id="btn-whatsapp-share" class="whatsapp-btn" href="#" target="_blank">
+            💬 Send Hug / Thank You to Bhai 🎁
+          </a>
+          <button id="btn-restart" class="text-link-btn">
+            🔄 Relive The Quest From Beginning
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
