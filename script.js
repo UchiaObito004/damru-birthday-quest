@@ -350,12 +350,12 @@ document.getElementById('nav-logo').addEventListener('click', () => {
 // ==========================================
 document.getElementById('profile-damru').addEventListener('click', () => {
   sound.init();
-  sound.playTaDum();
+  sound.playPop();
   flashScreen();
   setTimeout(() => {
     showScreen('screen-billboard', 'S1: PREVIEW');
     sound.startAmbientChimes();
-  }, 400);
+  }, 300);
 });
 
 document.getElementById('profile-bhai').addEventListener('click', () => {
@@ -539,7 +539,7 @@ document.getElementById('btn-next-3').addEventListener('click', () => {
 });
 
 // ==========================================
-// EPISODE 3: SIBLING LIE DETECTOR
+// EPISODE 3: SIBLING LIE DETECTOR (5 QUESTIONS)
 // ==========================================
 window.handleQuizAnswer = function(questionNum, answer) {
   sound.init();
@@ -547,7 +547,7 @@ window.handleQuizAnswer = function(questionNum, answer) {
   
   if (questionNum === 1) {
     sound.playCatch(2);
-    feedbackEl.textContent = "LIE DETECTOR: 100% FACT! Bhai waited for 3 hours! 😂";
+    feedbackEl.textContent = "TRUTH: 10% miss karna, 90% drama aur urgent gossip! 😂";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
       document.getElementById('quiz-step-1').classList.add('hidden');
@@ -555,20 +555,36 @@ window.handleQuizAnswer = function(questionNum, answer) {
     }, 1200);
   } else if (questionNum === 2) {
     sound.playCatch(3);
-    feedbackEl.textContent = "TRUTH VERIFIED: Household enters ceasefire when Damru sleeps! 😴🕊️";
+    feedbackEl.textContent = "100% FACT: 99% time call me sirf apni hi screen dekhti hai! 🤳😂";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
       document.getElementById('quiz-step-2').classList.add('hidden');
       document.getElementById('quiz-step-3').classList.remove('hidden');
     }, 1200);
   } else if (questionNum === 3) {
-    blastConfetti();
-    feedbackEl.textContent = "CORRECT! Damru is the world's most loved sister! ❤️✨";
+    sound.playCatch(4);
+    feedbackEl.textContent = "FACT: Gossip sunne me speed light se bhi tez hai! ⚡🍿";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
       document.getElementById('quiz-step-3').classList.add('hidden');
+      document.getElementById('quiz-step-4').classList.remove('hidden');
+    }, 1200);
+  } else if (questionNum === 4) {
+    sound.playCatch(5);
+    feedbackEl.textContent = "SCIENTIFIC FACT: Bhai's money = Damru's emergency pocket money! 💸";
+    feedbackEl.classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('quiz-step-4').classList.add('hidden');
+      document.getElementById('quiz-step-5').classList.remove('hidden');
+    }, 1200);
+  } else if (questionNum === 5) {
+    blastConfetti();
+    feedbackEl.textContent = "VERIFIED: Chahe kitni bhi doori ho, Bhai hamesha tere saath khada hai! ❤️✨";
+    feedbackEl.classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('quiz-step-5').classList.add('hidden');
       document.getElementById('vault-unlocked').classList.remove('hidden');
-    }, 1300);
+    }, 1400);
   }
 };
 
