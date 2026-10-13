@@ -1421,3 +1421,133 @@ body {
   padding: 10px;
   text-decoration: underline;
 }
+
+/* ==============================================
+   SUNGLASSES LOOKBOOK STYLES
+   ============================================== */
+.lookbook-top-pick {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(229, 9, 20, 0.1));
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.top-pick-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #ffd700, #ff9900);
+  color: #000;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.lookbook-top-pick h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: #ffd700;
+  margin-bottom: 6px;
+}
+
+.lookbook-top-pick p {
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.lookbook-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+.look-card {
+  background: rgba(25, 25, 25, 0.9);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.look-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+}
+
+.look-card.featured {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.25);
+}
+
+.look-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffd700;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  z-index: 2;
+}
+
+.look-card img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.look-card h4 {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: white;
+  margin: 14px 16px 6px;
+  letter-spacing: 0.5px;
+}
+
+.look-card p {
+  font-size: 0.85rem;
+  color: var(--netflix-gray);
+  margin: 0 16px 14px;
+  flex-grow: 1;
+  line-height: 1.4;
+}
+
+.look-btn {
+  display: block;
+  margin: 0 16px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-glass);
+  color: #ffd700;
+  text-decoration: none;
+  text-align: center;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.look-btn:hover {
+  background: #ffd700;
+  color: #000;
+}
+
+.lookbook-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
