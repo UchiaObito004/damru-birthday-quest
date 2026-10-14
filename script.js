@@ -160,67 +160,104 @@ document.getElementById('nav-logo').addEventListener('click', () => {
 // ==========================================
 // BACKGROUND MUSIC: TUM HI HO BANDHU (Zero Latency)
 // ==========================================
-const bgMusic = document.getElementById('bg-music');
-const btnMusicToggle = document.getElementById('btn-music-toggle');
-let isMusicPlaying = false;
+let bgAudio = null;
+let isMusicActive = false;
 
-// Preload audio into memory for instant zero-latency playback
-if (bgMusic) {
-  bgMusic.volume = 0.85;
-  try { bgMusic.load(); } catch (e) {}
+function getAudio() {
+  if (!bgAudio) {
+    bgAudio = document.getElementById('bg-music');
+    if (!bgAudio) {
+      bgAudio = new Audio('audio/tum_hi_ho_bandhu.mp3');
+      bgAudio.loop = true;
+    }
+    bgAudio.volume = 0.9;
+  }
+  return bgAudio;
 }
 
 function startMusic() {
-  if (bgMusic && !isMusicPlaying) {
-    const playPromise = bgMusic.play();
+  const audio = getAudio();
+  if (audio && !isMusicActive) {
+    const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.then(() => {
-        isMusicPlaying = true;
-        if (btnMusicToggle) {
-          btnMusicToggle.style.display = 'flex';
-          btnMusicToggle.classList.add('playing');
-          btnMusicToggle.textContent = '🎵';
-          btnMusicToggle.title = 'Music: Tum Hi Ho Bandhu (Tap to Pause)';
+        isMusicActive = true;
+        const btn = document.getElementById('btn-music-toggle');
+        if (btn) {
+          btn.style.display = 'flex';
+          btn.classList.add('playing');
+          btn.textContent = '🎵';
+          btn.title = 'Music: Tum Hi Ho Bandhu (Tap to Pause)';
         }
       }).catch(err => {
-        console.warn('Autoplay waiting for gesture:', err);
+        console.warn('Autoplay waiting for user gesture fallback:', err);
+        // Fallback: unlock on immediate document touch
+        const unlock = () => {
+          audio.play().then(() => {
+            isMusicActive = true;
+            const btn = document.getElementById('btn-music-toggle');
+            if (btn) {
+              btn.style.display = 'flex';
+              btn.classList.add('playing');
+              btn.textContent = '🎵';
+            }
+          }).catch(e => console.warn(e));
+        };
+        window.addEventListener('click', unlock, { once: true });
+        window.addEventListener('touchstart', unlock, { once: true });
       });
     }
   }
 }
 
 function toggleMusic() {
-  if (!bgMusic) return;
-  if (bgMusic.paused) {
-    bgMusic.play();
-    isMusicPlaying = true;
-    btnMusicToggle.classList.add('playing');
-    btnMusicToggle.textContent = '🎵';
-    btnMusicToggle.title = 'Music: Playing (Tap to Pause)';
+  const audio = getAudio();
+  if (!audio) return;
+  const btn = document.getElementById('btn-music-toggle');
+  if (audio.paused) {
+    audio.play();
+    isMusicActive = true;
+    if (btn) {
+      btn.classList.add('playing');
+      btn.textContent = '🎵';
+      btn.title = 'Music: Playing (Tap to Pause)';
+    }
   } else {
-    bgMusic.pause();
-    isMusicPlaying = false;
-    btnMusicToggle.classList.remove('playing');
-    btnMusicToggle.textContent = '🔇';
-    btnMusicToggle.title = 'Music: Muted (Tap to Play)';
+    audio.pause();
+    isMusicActive = false;
+    if (btn) {
+      btn.classList.remove('playing');
+      btn.textContent = '🔇';
+      btn.title = 'Music: Muted (Tap to Play)';
+    }
   }
 }
 
+const btnMusicToggle = document.getElementById('btn-music-toggle');
 if (btnMusicToggle) {
   btnMusicToggle.addEventListener('click', toggleMusic);
 }
 
-// ==========================================
-// SCREEN 0: "WHO'S WATCHING?" INTERACTIONS
-// ==========================================
-document.getElementById('profile-damru').addEventListener('click', () => {
-  // Start music instantly on user click with zero latency!
+// Global click handler wired directly to Damru's profile card
+window.handleDamruProfileClick = function(e) {
   startMusic();
   flashScreen();
   setTimeout(() => {
     showScreen('screen-billboard', 'S1: PREVIEW');
-  }, 300);
-});
+  }, 250);
+};
+
+// ==========================================
+// SCREEN 0: "WHO'S WATCHING?" INTERACTIONS
+// ==========================================
+const profileDamruEl = document.getElementById('profile-damru');
+if (profileDamruEl) {
+  profileDamruEl.addEventListener('click', window.handleDamruProfileClick);
+  profileDamruEl.addEventListener('pointerdown', (e) => {
+    // Immediate zero-latency audio start on finger touch!
+    startMusic();
+  }, { passive: true });
+}
 
 document.getElementById('profile-bhai').addEventListener('click', () => {
   alert("🛑 ACCESS RESTRICTED: Tonight is 100% Damru's Show! Please select Damru's profile! 👸🍿");
