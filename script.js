@@ -301,6 +301,18 @@ const overlayEl = document.getElementById('game-start-overlay');
 const comboToast = document.getElementById('combo-toast');
 const reward1El = document.getElementById('reward-1');
 
+// Dynamically enforce 15 treats target in DOM
+function enforceLevel15() {
+  const p = document.querySelector('#screen-level-1 .ep-header p');
+  if (p) p.innerHTML = 'Catch <strong>15 Birthday Treats</strong> in 25 seconds! Beware of <em>Mummy\'s Chappal 🩴</em> & <em>Books 📚</em>!';
+  const scoreSpan = document.getElementById('game-score');
+  if (scoreSpan && scoreSpan.parentElement && !scoreSpan.parentElement.innerHTML.includes('/15')) {
+    scoreSpan.parentElement.innerHTML = '<span class="stat-label">TREATS:</span> <span id="game-score" class="stat-val">' + gameScore + '</span>/15';
+  }
+}
+window.addEventListener('DOMContentLoaded', enforceLevel15);
+setInterval(enforceLevel15, 600);
+
 document.getElementById('btn-start-game').addEventListener('click', startGame);
 
 function startGame() {
