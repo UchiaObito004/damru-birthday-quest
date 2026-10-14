@@ -293,10 +293,10 @@ document.getElementById('btn-start-game').addEventListener('click', startGame);
 function startGame() {
   gameScore = 0;
   comboMultiplier = 1;
-  gameTimeLeft = 20;
+  gameTimeLeft = 25;
   scoreEl.textContent = '0';
   comboEl.textContent = 'x1';
-  timerEl.textContent = '20';
+  timerEl.textContent = '25';
   overlayEl.classList.add('hidden');
   reward1El.classList.add('hidden');
 
@@ -308,11 +308,11 @@ function startGame() {
     if (gameTimeLeft <= 0) endGame(false);
   }, 1000);
 
-  spawnInterval = setInterval(spawnTreat, 480);
+  spawnInterval = setInterval(spawnTreat, 420);
 }
 
 function spawnTreat() {
-  if (gameScore >= 8) return;
+  if (gameScore >= 15) return;
   const treats = ['🎂', '🧁', '🍦', '🍫', '🎁', '🍓', '🩴', '📚'];
   const itemChar = treats[Math.floor(Math.random() * treats.length)];
   const isRoast = itemChar === '🩴' || itemChar === '📚';
@@ -347,7 +347,7 @@ function spawnTreat() {
     scoreEl.textContent = gameScore;
     setTimeout(() => item.remove(), 100);
 
-    if (gameScore >= 8) endGame(true);
+    if (gameScore >= 15) endGame(true);
   });
 
   gameBoard.appendChild(item);
