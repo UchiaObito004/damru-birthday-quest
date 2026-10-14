@@ -282,7 +282,7 @@ document.getElementById('btn-play-ep1').addEventListener('click', () => {
 });
 
 document.getElementById('btn-episodes-list').addEventListener('click', () => {
-  alert("🍿 Damflix Season 1 Episodes:\n\n• Episode 1: The Sugar Rush Reflex\n• Episode 2: Quantum Aura Scanner\n• Episode 3: Sibling Lie Detector\n• Episode 4: The Wishing Sanctuary\n• Episode 5: Season Finale & Hinglish Shayari 👑\n• Special: Damru's Sunglasses Lookbook 🕶️");
+  alert("🍿 Damflix Season 1 Episodes:\n\n• Episode 1: The Sugar Rush Reflex\n• Episode 2: Quantum Aura Scanner\n• Episode 3: Sibling Lie Detector\n• Episode 4: The Wishing Sanctuary\n• Episode 5: Season Finale & Hinglish Shayari 👑");
 });
 
 // ==========================================
@@ -613,28 +613,6 @@ document.getElementById('btn-screenshot-hint').addEventListener('click', () => {
 document.getElementById('btn-restart').addEventListener('click', () => {
   showScreen('screen-profiles', 'S1: EP 0');
 });
-
-// Lookbook Screen Navigation
-const btnViewLookbook = document.getElementById('btn-view-lookbook');
-if (btnViewLookbook) {
-  btnViewLookbook.addEventListener('click', () => {
-    showScreen('screen-lookbook', 'VIP: LOOKBOOK');
-  });
-}
-
-const navVipPerks = document.getElementById('nav-vip-perks');
-if (navVipPerks) {
-  navVipPerks.addEventListener('click', () => {
-    showScreen('screen-lookbook', 'VIP: LOOKBOOK');
-  });
-}
-
-const btnBackFromLookbook = document.getElementById('btn-back-from-lookbook');
-if (btnBackFromLookbook) {
-  btnBackFromLookbook.addEventListener('click', () => {
-    showScreen('screen-level-5', 'S1: FINALE');
-  });
-}
 
 // ==========================================
 // CUTE GOOD ENDING: TEDDY & CUTE EMOJIS
