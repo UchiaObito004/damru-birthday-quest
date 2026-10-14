@@ -518,3 +518,77 @@ if (btnBackFromLookbook) {
   });
 }
 
+// ==========================================
+// CUTE GOOD ENDING: TEDDY & CUTE EMOJIS
+// ==========================================
+const teddyAvatar = document.getElementById('teddy-bear-interactive');
+const btnHugTeddy = document.getElementById('btn-hug-teddy');
+const teddySpeechBubble = document.getElementById('teddy-speech-bubble');
+const cuteFloatingContainer = document.getElementById('cute-floating-container');
+
+const sweetTeddyQuotes = [
+  "Bhai's biggest warm hug for Damru! 🫂💖",
+  "Tu sabse best behen hai! 🌸✨",
+  "Chahe kitni bhi door ho, Bhai hamesha tere saath hai! ❤️",
+  "Emergency chocolate & pizza sponsorship approved! 🍫🍕",
+  "Hamesha hasti reh meri nautanki behen! 🤪💖",
+  "Happy Birthday Meri Pyaari Damru! 🎂🧸🎉",
+  "No matter how big you grow, you're always Bhai's little sister! 🥺❤️"
+];
+let quoteIndex = 0;
+
+function sendTeddyHug(e) {
+  if (teddyAvatar) {
+    teddyAvatar.classList.remove('wiggle');
+    void teddyAvatar.offsetWidth; // trigger reflow
+    teddyAvatar.classList.add('wiggle');
+  }
+
+  // Update speech bubble
+  quoteIndex = (quoteIndex + 1) % sweetTeddyQuotes.length;
+  if (teddySpeechBubble) {
+    teddySpeechBubble.textContent = sweetTeddyQuotes[quoteIndex];
+    teddySpeechBubble.style.transform = 'scale(1.08)';
+    setTimeout(() => { teddySpeechBubble.style.transform = 'scale(1)'; }, 250);
+  }
+
+  // Spawn bursting cute emojis
+  const cuteEmojis = ['🧸', '💖', '🌸', '✨', '🎀', '🥺', '🎂', '🍫', '🍭', '💫', '🧁', '🍓'];
+  for (let i = 0; i < 10; i++) {
+    setTimeout(() => {
+      const emojiEl = document.createElement('div');
+      emojiEl.className = 'floating-cute-emoji';
+      emojiEl.textContent = cuteEmojis[Math.floor(Math.random() * cuteEmojis.length)];
+      
+      const randomX = Math.random() * 220 - 110; // offset around teddy
+      emojiEl.style.left = `calc(50% + ${randomX}px)`;
+      emojiEl.style.top = `60%`;
+
+      if (cuteFloatingContainer) {
+        cuteFloatingContainer.appendChild(emojiEl);
+        setTimeout(() => emojiEl.remove(), 1600);
+      }
+    }, i * 70);
+  }
+
+  // Haptic feedback
+  if (navigator.vibrate) {
+    try { navigator.vibrate([25, 40, 25]); } catch (err) {}
+  }
+
+  // Mini confetti burst
+  if (e && e.clientX) {
+    triggerExplosion(e.clientX, e.clientY, 18);
+  } else {
+    triggerExplosion(window.innerWidth / 2, window.innerHeight * 0.7, 18);
+  }
+}
+
+if (teddyAvatar) {
+  teddyAvatar.addEventListener('click', sendTeddyHug);
+}
+if (btnHugTeddy) {
+  btnHugTeddy.addEventListener('click', sendTeddyHug);
+}
+
+
