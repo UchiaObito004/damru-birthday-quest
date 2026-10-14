@@ -36,28 +36,30 @@ function spawnLantern(label = '✨') {
 
 function animateBg() {
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-  stars.forEach(s => {
+  
+  // Render stars efficiently
+  bgCtx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  for (let i = 0; i < stars.length; i++) {
+    const s = stars[i];
     s.alpha += s.speed;
     if (s.alpha > 1 || s.alpha < 0.2) s.speed = -s.speed;
+    bgCtx.globalAlpha = Math.abs(s.alpha);
     bgCtx.beginPath();
     bgCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-    bgCtx.fillStyle = `rgba(255, 255, 255, ${Math.abs(s.alpha)})`;
     bgCtx.fill();
-  });
+  }
+  bgCtx.globalAlpha = 1.0;
 
+  // Render lanterns without expensive shadowBlur
   for (let i = lanterns.length - 1; i >= 0; i--) {
     const l = lanterns[i];
     l.y -= l.speedY;
     l.x += Math.sin(l.y * 0.02) * 0.7;
 
-    bgCtx.save();
-    bgCtx.shadowBlur = 20;
-    bgCtx.shadowColor = '#e50914';
     bgCtx.fillStyle = `rgba(229, 9, 20, ${l.alpha})`;
     bgCtx.beginPath();
     bgCtx.roundRect(l.x, l.y, l.size, l.size * 1.35, [4, 4, 6, 6]);
     bgCtx.fill();
-    bgCtx.restore();
 
     if (l.y < -60) lanterns.splice(i, 1);
   }
@@ -66,10 +68,11 @@ function animateBg() {
 }
 animateBg();
 
-// --- FIREWORKS CANVAS ---
+// --- FIREWORKS CANVAS (Optimized, On-Demand) ---
 const fwCanvas = document.getElementById('fireworks-canvas');
 const fwCtx = fwCanvas.getContext('2d');
 let particles = [];
+let isFwRunning = false;
 
 function resizeFwCanvas() {
   fwCanvas.width = window.innerWidth;
@@ -78,11 +81,11 @@ function resizeFwCanvas() {
 window.addEventListener('resize', resizeFwCanvas);
 resizeFwCanvas();
 
-function triggerExplosion(x, y, count = 40) {
-  const colors = ['#e50914', '#ffd700', '#ff2e93', '#00f2fe', '#ffffff', '#b81d24'];
+function triggerExplosion(x, y, count = 24) {
+  const colors = ['#e50914', '#ffd700', '#ff2e93', '#00f2fe', '#ffffff'];
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const speed = Math.random() * 6 + 2;
+    const speed = Math.random() * 5 + 2;
     particles.push({
       x: x,
       y: y,
@@ -90,19 +93,30 @@ function triggerExplosion(x, y, count = 40) {
       vy: Math.sin(angle) * speed,
       alpha: 1,
       color: colors[Math.floor(Math.random() * colors.length)],
-      size: Math.random() * 3.5 + 2
+      size: Math.random() * 2.5 + 2
     });
+  }
+
+  if (!isFwRunning) {
+    isFwRunning = true;
+    requestAnimationFrame(animateFw);
   }
 }
 
 function animateFw() {
+  if (particles.length === 0) {
+    fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+    isFwRunning = false;
+    return;
+  }
+
   fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
     p.x += p.vx;
     p.y += p.vy;
     p.vy += 0.08;
-    p.alpha -= 0.02;
+    p.alpha -= 0.025;
 
     if (p.alpha <= 0) {
       particles.splice(i, 1);
@@ -118,7 +132,6 @@ function animateFw() {
   }
   requestAnimationFrame(animateFw);
 }
-animateFw();
 
 function blastConfetti() {
   for (let i = 0; i < 5; i++) {

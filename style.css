@@ -649,12 +649,13 @@ body {
   user-select: none;
   touch-action: manipulation;
   animation: dropItem linear forwards;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.8));
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 @keyframes dropItem {
-  0% { transform: translateY(-60px) rotate(0deg); opacity: 0.95; }
-  100% { transform: translateY(440px) rotate(360deg); opacity: 0; }
+  0% { transform: translateY(-60px) rotate(0deg) translateZ(0); opacity: 0.95; }
+  100% { transform: translateY(440px) rotate(360deg) translateZ(0); opacity: 0; }
 }
 
 /* Perk Vouchers (Netflix Style) */
