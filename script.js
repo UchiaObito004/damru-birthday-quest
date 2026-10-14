@@ -460,44 +460,53 @@ document.getElementById('btn-next-3').addEventListener('click', () => {
 // EPISODE 3: SIBLING LIE DETECTOR (5 QUESTIONS)
 // ==========================================
 window.handleQuizAnswer = function(questionNum, answer) {
+  // Disable options so she can comfortably read without double-clicking
+  const currentStep = document.getElementById(`quiz-step-${questionNum}`);
+  if (currentStep) {
+    currentStep.querySelectorAll('.quiz-btn').forEach(btn => {
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.7';
+    });
+  }
+
   const feedbackEl = document.getElementById(`quiz-feedback-${questionNum}`);
   
   if (questionNum === 1) {
-    feedbackEl.textContent = "TRUTH: 10% miss karna, 90% drama aur urgent gossip! 😂";
+    feedbackEl.innerHTML = "🔍 <strong>TRUTH DETECTED:</strong> 10% miss karna, 90% drama aur urgent gossip! 😂<br><span style='font-size:0.8rem; opacity:0.8; font-weight:400;'>Next question loading in 5s...</span>";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
       document.getElementById('quiz-step-1').classList.add('hidden');
       document.getElementById('quiz-step-2').classList.remove('hidden');
-    }, 1200);
+    }, 5000);
   } else if (questionNum === 2) {
-    feedbackEl.textContent = "100% FACT: 99% time call me sirf apni hi screen dekhti hai! 🤳😂";
+    feedbackEl.innerHTML = "🔍 <strong>100% FACT:</strong> 99% time call me sirf apni hi screen dekhti hai! 🤳😂<br><span style='font-size:0.8rem; opacity:0.8; font-weight:400;'>Next question loading in 5s...</span>";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
       document.getElementById('quiz-step-2').classList.add('hidden');
       document.getElementById('quiz-step-3').classList.remove('hidden');
-    }, 1200);
+    }, 5000);
   } else if (questionNum === 3) {
-    feedbackEl.textContent = "FACT: Gossip sunne me speed light se bhi tez hai! ⚡🍿";
+    feedbackEl.innerHTML = "🔍 <strong>CONFIRMED:</strong> Gossip sunne me speed light se bhi tez hai! ⚡🍿<br><span style='font-size:0.8rem; opacity:0.8; font-weight:400;'>Next question loading in 5s...</span>";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
       document.getElementById('quiz-step-3').classList.add('hidden');
       document.getElementById('quiz-step-4').classList.remove('hidden');
-    }, 1200);
+    }, 5000);
   } else if (questionNum === 4) {
-    feedbackEl.textContent = "SCIENTIFIC FACT: Bhai's money = Damru's emergency pocket money! 💸";
+    feedbackEl.innerHTML = "🔍 <strong>SCIENTIFIC FACT:</strong> Bhai's money = Damru's emergency pocket money! 💸<br><span style='font-size:0.8rem; opacity:0.8; font-weight:400;'>Next question loading in 5s...</span>";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
       document.getElementById('quiz-step-4').classList.add('hidden');
       document.getElementById('quiz-step-5').classList.remove('hidden');
-    }, 1200);
+    }, 5000);
   } else if (questionNum === 5) {
     blastConfetti();
-    feedbackEl.textContent = "VERIFIED: Chahe kitni bhi doori ho, Bhai hamesha tere saath khada hai! ❤️✨";
+    feedbackEl.innerHTML = "💖 <strong>VERIFIED:</strong> Chahe kitni bhi doori ho, Bhai hamesha tere saath khada hai! ❤️✨<br><span style='font-size:0.8rem; opacity:0.8; font-weight:400;'>Unlocking VIP Sanctuary in 5s...</span>";
     feedbackEl.classList.remove('hidden');
     setTimeout(() => {
       document.getElementById('quiz-step-5').classList.add('hidden');
       document.getElementById('vault-unlocked').classList.remove('hidden');
-    }, 1400);
+    }, 5000);
   }
 };
 
