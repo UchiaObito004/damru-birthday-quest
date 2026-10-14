@@ -158,9 +158,64 @@ document.getElementById('nav-logo').addEventListener('click', () => {
 });
 
 // ==========================================
+// BACKGROUND MUSIC: TUM HI HO BANDHU (Zero Latency)
+// ==========================================
+const bgMusic = document.getElementById('bg-music');
+const btnMusicToggle = document.getElementById('btn-music-toggle');
+let isMusicPlaying = false;
+
+// Preload audio into memory for instant zero-latency playback
+if (bgMusic) {
+  bgMusic.volume = 0.85;
+  try { bgMusic.load(); } catch (e) {}
+}
+
+function startMusic() {
+  if (bgMusic && !isMusicPlaying) {
+    const playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        isMusicPlaying = true;
+        if (btnMusicToggle) {
+          btnMusicToggle.style.display = 'flex';
+          btnMusicToggle.classList.add('playing');
+          btnMusicToggle.textContent = '🎵';
+          btnMusicToggle.title = 'Music: Tum Hi Ho Bandhu (Tap to Pause)';
+        }
+      }).catch(err => {
+        console.warn('Autoplay waiting for gesture:', err);
+      });
+    }
+  }
+}
+
+function toggleMusic() {
+  if (!bgMusic) return;
+  if (bgMusic.paused) {
+    bgMusic.play();
+    isMusicPlaying = true;
+    btnMusicToggle.classList.add('playing');
+    btnMusicToggle.textContent = '🎵';
+    btnMusicToggle.title = 'Music: Playing (Tap to Pause)';
+  } else {
+    bgMusic.pause();
+    isMusicPlaying = false;
+    btnMusicToggle.classList.remove('playing');
+    btnMusicToggle.textContent = '🔇';
+    btnMusicToggle.title = 'Music: Muted (Tap to Play)';
+  }
+}
+
+if (btnMusicToggle) {
+  btnMusicToggle.addEventListener('click', toggleMusic);
+}
+
+// ==========================================
 // SCREEN 0: "WHO'S WATCHING?" INTERACTIONS
 // ==========================================
 document.getElementById('profile-damru').addEventListener('click', () => {
+  // Start music instantly on user click with zero latency!
+  startMusic();
   flashScreen();
   setTimeout(() => {
     showScreen('screen-billboard', 'S1: PREVIEW');
@@ -172,11 +227,12 @@ document.getElementById('profile-bhai').addEventListener('click', () => {
 });
 
 document.getElementById('btn-play-ep1').addEventListener('click', () => {
+  startMusic();
   showScreen('screen-level-1', 'S1: EP 1');
 });
 
 document.getElementById('btn-episodes-list').addEventListener('click', () => {
-  alert("🍿 Damflix Season 1 Episodes:\n\n• Episode 1: The Sugar Rush Reflex\n• Episode 2: Quantum Aura Scanner\n• Episode 3: Sibling Lie Detector\n• Episode 4: The Wishing Sanctuary\n• Episode 5: Season Finale & Hinglish Shayari 👑");
+  alert("🍿 Damflix Season 1 Episodes:\n\n• Episode 1: The Sugar Rush Reflex\n• Episode 2: Quantum Aura Scanner\n• Episode 3: Sibling Lie Detector\n• Episode 4: The Wishing Sanctuary\n• Episode 5: Season Finale & Hinglish Shayari 👑\n• Special: Damru's Sunglasses Lookbook 🕶️");
 });
 
 // ==========================================

@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="preload" as="audio" href="audio/tum_hi_ho_bandhu.mp3">
 </head>
 <body>
   <!-- Ambient Cosmic Canvas & Celebratory Fireworks -->
@@ -27,6 +28,7 @@
       </div>
     </div>
     <div class="nav-right">
+      <button id="btn-music-toggle" class="sound-btn" title="Music: Playing" style="display: none; margin-right: 8px;">🎵</button>
       <div class="episode-pill" id="episode-pill">S1: EP 0</div>
       <div class="user-avatar-pill" id="nav-profile-pic">
         <img src="images/damru_1.jpg" alt="Profile">
@@ -625,6 +627,9 @@
     </section>
 
   </main>
+
+  <!-- Background Music Track: Tum Hi Ho Bandhu (Preloaded, Zero Latency) -->
+  <audio id="bg-music" src="audio/tum_hi_ho_bandhu.mp3" preload="auto" loop playsinline></audio>
 
   <script src="script.js"></script>
 </body>

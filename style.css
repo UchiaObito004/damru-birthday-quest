@@ -157,6 +157,17 @@ body {
   transform: scale(1.08);
 }
 
+.sound-btn.playing {
+  border-color: #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+  animation: musicBeat 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes musicBeat {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); box-shadow: 0 0 16px rgba(255, 215, 0, 0.7); }
+}
+
 .user-avatar-pill img {
   width: 36px;
   height: 36px;
